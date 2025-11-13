@@ -3,7 +3,8 @@
         "firestore",
         "Millis",
         "predeploy",
-        "reorderly"
+        "reorderly",
+        "signup"
     ],
     "chatgpt.commentCodeLensEnabled": false
 }

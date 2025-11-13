@@ -1,18 +1,10 @@
+import { db } from '../inits/firebase';
+
 /**
- * Firestore initialization and common utilities
+ * Firestore collection references
  */
-
-import { initializeApp } from 'firebase-admin/app';
-import { getFirestore } from 'firebase-admin/firestore';
-
-// Initialize Firebase Admin
-initializeApp();
-
-// Get Firestore instance
-export const db = getFirestore();
-
-// Collection references
 export const collections = {
+  users: db.collection('users'),
   merchants: db.collection('merchants'),
   oauthStates: db.collection('oauth_states'),
   onboardingSessions: db.collection('onboarding_sessions'),

@@ -6,6 +6,10 @@
 import { onRequest } from 'firebase-functions/https';
 
 import {
+  generateCustomToken,
+  getOrCreateUser,
+} from '../../auth/firebase/user-manager';
+import {
   getMerchantByProviderId,
   updateMerchant,
   upsertMerchant,
@@ -75,9 +79,15 @@ export const squareCallback = onRequest(async (req, res) => {
         },
       });
 
+      // Create or get Firebase Auth user
+      const firebaseUser = await getOrCreateUser(merchant.id, merchant.name);
+
+      // Generate custom token for web client to sign in
+      const customToken = await generateCustomToken(firebaseUser.uid);
+
       const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 
-      const redirectUrl = `${config.onboardingUrl}/${destPage}?merchant_id=${merchant.id}`;
+      const redirectUrl = `${config.onboardingUrl}/${destPage}?token=${customToken}`;
       res.redirect(redirectUrl);
       return;
     }
@@ -105,9 +115,15 @@ export const squareCallback = onRequest(async (req, res) => {
 
     console.log({ merchant });
 
+    // Create or get Firebase Auth user
+    const firebaseUser = await getOrCreateUser(merchant.id, merchant.name);
+
+    // Generate custom token for web client to sign in
+    const customToken = await generateCustomToken(firebaseUser.uid);
+
     const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 
-    const redirectUrl = `${config.onboardingUrl}/${destPage}?merchant_id=${merchant.id}`;
+    const redirectUrl = `${config.onboardingUrl}/${destPage}?token=${customToken}`;
 
     res.redirect(redirectUrl);
   } catch (error) {
