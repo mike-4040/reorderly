@@ -15,3 +15,10 @@ export function getRequiredEnv(key: string): string {
   }
   return value;
 }
+
+/**
+ * Get the base URL for Firebase Functions
+ */
+export function getFunctionsUrl(): string {
+  return getRequiredEnv("VITE_FUNCTIONS_URL");
+}
