@@ -11,7 +11,7 @@
     "start": "./scripts/start-emulators.sh",
     "deploy-stg": "firebase deploy --project reorderly-staging --only functions",
     "logs": "firebase functions:log",
-    "tunnel": "ngrok http 3302"
+    "tunnel": "ngrok http --url=reorderly.ngrok.app 3302"
   },
   "engines": {
     "node": "22"

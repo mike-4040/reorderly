@@ -7,6 +7,7 @@ import {
   createUserWithEmailAndPassword,
   onAuthStateChanged,
   signInWithEmailAndPassword,
+  signInWithCustomToken as firebaseSignInWithCustomToken,
   signOut as firebaseSignOut,
   User,
 } from 'firebase/auth';
@@ -65,12 +66,21 @@ export function AuthProvider({ children }: AuthProviderProps) {
     }
   };
 
+  const signInWithCustomToken = async (token: string): Promise<void> => {
+    try {
+      await firebaseSignInWithCustomToken(auth, token);
+    } catch (error) {
+      throw new Error('signInWithCustomToken_failed', { cause: error });
+    }
+  };
+
   const value: AuthContextValue = {
     user,
     isLoadingAuthState,
     signIn,
     signUp,
     signOut,
+    signInWithCustomToken,
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

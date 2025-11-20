@@ -3,7 +3,12 @@
         "firestore",
         "Millis",
         "predeploy",
-        "reorderly"
+        "reorderly",
+        "signup"
     ],
-    "chatgpt.commentCodeLensEnabled": false
+    "chatgpt.commentCodeLensEnabled": false,
+    "chat.checkpoints.showFileChanges": true,
+    "chat.emptyState.history.enabled": true,
+    "npm.packageManager": "npm",
+    "npm.runSilent": true
 }
