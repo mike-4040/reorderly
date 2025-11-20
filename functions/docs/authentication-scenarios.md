@@ -10,11 +10,13 @@ This document describes all authentication scenarios in the Reorderly applicatio
 
 **When:** User clicks "Login with Square" on the login page
 
-**Requirements:** 
+**Requirements:**
+
 - User must have previously connected their Square account (`flow=install`)
 - Merchant record exists in Firestore
 
 **Flow:**
+
 ```
 User clicks "Login with Square"
     ↓
@@ -41,6 +43,7 @@ User is authenticated ✓
 ```
 
 **Result:**
+
 - User is logged into Firebase Auth
 - Merchant tokens are refreshed
 - User can access the application
@@ -54,6 +57,7 @@ User is authenticated ✓
 **Requirements:** None
 
 **Flow:**
+
 ```
 User clicks "Connect your Square Account"
     ↓
@@ -86,6 +90,7 @@ User is authenticated ✓
 ```
 
 **Result:**
+
 - New merchant created (if first time)
 - Firebase Auth user created
 - Firestore user created with merchant link
@@ -100,6 +105,7 @@ User is authenticated ✓
 **Requirements:** None
 
 **Flow:**
+
 ```
 User fills signup form (email, password)
     ↓
@@ -121,6 +127,7 @@ User is authenticated ✓
 ```
 
 **Result:**
+
 - Firebase Auth user with email/password
 - Firestore user created
 - Account setup complete but no merchant connected
@@ -133,10 +140,12 @@ User is authenticated ✓
 **When:** User logs in with email and password
 
 **Requirements:**
+
 - User previously signed up with email/password
 - OR user connected Square and then added email/password
 
 **Flow:**
+
 ```
 User enters email and password
     ↓
@@ -148,6 +157,7 @@ User is authenticated ✓
 ```
 
 **Result:**
+
 - User is logged into Firebase Auth
 - No backend calls needed
 - Firestore user lookup on client to get merchant
@@ -163,13 +173,13 @@ User is authenticated ✓
 ```
 1. User connects Square (flow=install)
    → accountSetupComplete: false
-   
+
 2. User navigates to account settings
 
 3. User adds email/password
    → Update Firestore: accountSetupComplete: true
    → Link email to Firebase Auth user
-   
+
 4. Next time: User can login with either Square OR email
 ```
 
@@ -183,14 +193,14 @@ User is authenticated ✓
 1. User signs up with email/password
    → merchantId: null
    → accountSetupComplete: true
-   
+
 2. User clicks "Connect your Square Account"
    → flow=install (but user already authenticated)
-   
+
 3. After Square OAuth callback:
    → Update Firestore user: merchantId = merchant.id
    → Update Firestore user: providerUserId = squareMerchantId
-   
+
 4. User now has both email login and merchant access
 ```
 
@@ -204,17 +214,18 @@ User is authenticated ✓
 Owner:
   - email: owner@coffee.com
   - merchantId: "merch_1"
-  
+
 Employee 1:
   - email: alice@coffee.com
   - merchantId: "merch_1"
-  
+
 Employee 2:
   - email: bob@coffee.com
   - merchantId: "merch_1"
 ```
 
 All three users can:
+
 - Log in with their own credentials
 - Access the same merchant data
 - Future: Different permission levels
@@ -245,13 +256,13 @@ Access restored ✓
 
 ## Authentication Matrix
 
-| User State | Firebase Auth | Firestore User | Square Connected | Actions Available |
-|------------|---------------|----------------|------------------|-------------------|
-| **New visitor** | ❌ No | ❌ No | ❌ No | Signup, Login with Square |
-| **Square connected** | ✅ Yes | ✅ Yes | ✅ Yes | Access app, Add email |
-| **Email only** | ✅ Yes | ✅ Yes | ❌ No | Connect Square |
-| **Fully setup** | ✅ Yes | ✅ Yes | ✅ Yes | Full access |
-| **Tokens expired** | ✅ Yes | ✅ Yes | ❌ Disconnected | Reconnect Square |
+| User State           | Firebase Auth | Firestore User | Square Connected | Actions Available         |
+| -------------------- | ------------- | -------------- | ---------------- | ------------------------- |
+| **New visitor**      | ❌ No         | ❌ No          | ❌ No            | Signup, Login with Square |
+| **Square connected** | ✅ Yes        | ✅ Yes         | ✅ Yes           | Access app, Add email     |
+| **Email only**       | ✅ Yes        | ✅ Yes         | ❌ No            | Connect Square            |
+| **Fully setup**      | ✅ Yes        | ✅ Yes         | ✅ Yes           | Full access               |
+| **Tokens expired**   | ✅ Yes        | ✅ Yes         | ❌ Disconnected  | Reconnect Square          |
 
 ---
 
@@ -278,10 +289,10 @@ const token = urlParams.get('token');
 if (token) {
   // Sign in with custom token
   await auth.signInWithCustomToken(token);
-  
+
   // Now user is authenticated
   const user = auth.currentUser;
-  
+
   // Fetch Firestore user to get merchant
   const userDoc = await getDoc(doc(db, 'users', user.uid));
   const merchantId = userDoc.data().merchantId;

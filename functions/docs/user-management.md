@@ -15,6 +15,7 @@ The Reorderly application maintains two separate user systems that work together
 **Collection:** `users/{firebaseUid}`
 
 **Schema:**
+
 ```typescript
 {
   id: string;                    // Firebase Auth UID (same as document ID)
@@ -27,6 +28,7 @@ The Reorderly application maintains two separate user systems that work together
 ```
 
 **Key Characteristics:**
+
 - Stored in Firestore `users` collection
 - Links Firebase Auth users to merchants
 - Tracks account setup status
@@ -34,6 +36,7 @@ The Reorderly application maintains two separate user systems that work together
 - Queryable for application logic
 
 **Use Cases:**
+
 - Determine which merchant a user belongs to
 - Track whether user completed account setup
 - List all users with access to a merchant
@@ -46,6 +49,7 @@ The Reorderly application maintains two separate user systems that work together
 **Purpose:** Authentication and identity management
 
 **Schema:**
+
 ```typescript
 {
   uid: string;              // Unique Firebase Auth ID
@@ -61,6 +65,7 @@ The Reorderly application maintains two separate user systems that work together
 ```
 
 **Key Characteristics:**
+
 - Managed by Firebase Authentication
 - Provides authentication tokens (custom tokens, ID tokens)
 - Can exist without email (for OAuth-only users)
@@ -68,6 +73,7 @@ The Reorderly application maintains two separate user systems that work together
 - Used for authentication, not business logic
 
 **Use Cases:**
+
 - Authenticate users (sign in/sign out)
 - Generate custom tokens for web client login
 - Verify ID tokens from clients
@@ -114,13 +120,14 @@ Merchant: "Coffee Shop" (merch_1)
 User 1: alice@example.com (uid: abc123)
     └─ Firebase Auth: abc123
     └─ Firestore: users/abc123 → { merchantId: "merch_1" }
-    
+
 User 2: bob@example.com (uid: def456)
     └─ Firebase Auth: def456
     └─ Firestore: users/def456 → { merchantId: "merch_1" }
 ```
 
 This allows:
+
 - Multiple team members per merchant
 - Future: Role-based access control
 - Future: Different permission levels
@@ -128,12 +135,14 @@ This allows:
 ## When to Use Each
 
 ### Use Firestore User (`User`) when:
+
 - Checking which merchant a user belongs to
 - Listing all users for a merchant
 - Tracking account setup status
 - Storing business logic data
 
 ### Use Firebase Auth User (`UserRecord`) when:
+
 - Authenticating users
 - Generating tokens
 - Managing sign-in/sign-out
@@ -142,6 +151,7 @@ This allows:
 ## Repository Functions
 
 ### Firestore Users (`functions/src/users/repository.ts`)
+
 - `createUser(data)` - Create user in Firestore
 - `getUserById(uid)` - Get Firestore user
 - `updateUser(uid, data)` - Update Firestore user
@@ -149,6 +159,7 @@ This allows:
 - `getOrCreateUser(data)` - Get or create Firestore user
 
 ### Firebase Auth Users (`functions/src/auth/firebase/user-manager.ts`)
+
 - `getOrCreateUser(uid, displayName)` - Get or create auth user
 - `generateCustomToken(uid)` - Generate token for web login
 
@@ -160,6 +171,7 @@ The `accountSetupComplete` field tracks whether a user has set up email/password
 - `true` - User has email/password credentials and can log in directly
 
 This enables:
+
 - OAuth-first onboarding (connect Square before email setup)
 - Later email/password account creation
 - Future: Social login integration

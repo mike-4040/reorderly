@@ -14,6 +14,7 @@ export interface AuthContextValue {
   signIn: (email: string, password: string) => Promise<void>;
   signUp: (email: string, password: string) => Promise<void>;
   signOut: () => Promise<void>;
+  signInWithCustomToken: (token: string) => Promise<void>;
 }
 
 /**

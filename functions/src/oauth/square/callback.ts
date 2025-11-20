@@ -5,10 +5,7 @@
 
 import { onRequest } from 'firebase-functions/https';
 
-import {
-  generateCustomToken,
-  getOrCreateUser,
-} from '../../auth/firebase/user-manager';
+import { generateCustomToken, getOrCreateUser } from '../../auth/firebase/user-manager';
 import {
   getMerchantByProviderId,
   updateMerchant,

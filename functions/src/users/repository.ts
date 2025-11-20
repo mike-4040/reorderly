@@ -10,7 +10,7 @@ import { CreateUserData, UpdateUserData, User } from './types';
 
 /**
  * Create a new user in Firestore
- * 
+ *
  * @param data - User creation data
  * @returns The created user
  */
@@ -33,7 +33,7 @@ export async function createUser(data: CreateUserData): Promise<User> {
 
 /**
  * Get a user by their Firebase Auth UID
- * 
+ *
  * @param uid - Firebase Auth UID
  * @returns The user or null if not found
  */
@@ -49,15 +49,12 @@ export async function getUserById(uid: string): Promise<User | null> {
 
 /**
  * Update an existing user
- * 
+ *
  * @param uid - Firebase Auth UID
  * @param data - Update data
  * @returns The updated user
  */
-export async function updateUser(
-  uid: string,
-  data: UpdateUserData,
-): Promise<User> {
+export async function updateUser(uid: string, data: UpdateUserData): Promise<User> {
   const updateData = {
     ...data,
     updatedAt: Timestamp.now(),
@@ -76,14 +73,12 @@ export async function updateUser(
 
 /**
  * Get all users for a specific merchant
- * 
+ *
  * @param merchantId - The merchant ID
  * @returns Array of users
  */
 export async function getUsersByMerchantId(merchantId: string): Promise<User[]> {
-  const snapshot = await collections.users
-    .where('merchantId', '==', merchantId)
-    .get();
+  const snapshot = await collections.users.where('merchantId', '==', merchantId).get();
 
   return snapshot.docs.map((doc) => doc.data() as User);
 }
@@ -91,7 +86,7 @@ export async function getUsersByMerchantId(merchantId: string): Promise<User[]> 
 /**
  * Get or create a user
  * Creates a new user if one doesn't exist
- * 
+ *
  * @param data - User creation data
  * @returns The existing or newly created user
  */
@@ -107,7 +102,7 @@ export async function getOrCreateUser(data: CreateUserData): Promise<User> {
 
 /**
  * Delete a user
- * 
+ *
  * @param uid - Firebase Auth UID
  */
 export async function deleteUser(uid: string): Promise<void> {
