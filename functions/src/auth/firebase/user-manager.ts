@@ -8,28 +8,33 @@ import { auth } from '../../inits/firebase';
 import { digProperty } from '../../utils/object';
 
 /**
- * Get or create a Firebase Auth user
- * Creates a new user if one doesn't exist with the given UID
+ * Get or create a Firebase Auth user with a specific UID
+ * Tries to get existing user, creates one with the given UID if not found
  *
  * @param uid - The Firebase Auth UID to use
  * @param displayName - Display name for the user
  * @returns The Firebase Auth UserRecord
  */
-export async function getOrCreateUser(uid: string, displayName: string): Promise<UserRecord> {
+export async function getOrCreateAuthUser(uid: string, displayName: string): Promise<UserRecord> {
   try {
-    // Try to get existing user
     return await auth.getUser(uid);
   } catch (error) {
     const errorCode = digProperty(error, 'errorInfo', 'code');
-    // Only create user if they don't exist, re-throw other errors
     if (errorCode === 'auth/user-not-found') {
-      return await auth.createUser({
-        uid,
-        displayName,
-      });
+      return await auth.createUser({ uid, displayName });
     }
     throw error;
   }
+}
+
+/**
+ * Create a new Firebase Auth user with auto-generated UID
+ *
+ * @param displayName - Display name for the user
+ * @returns The Firebase Auth UserRecord
+ */
+export async function createAuthUser(displayName: string): Promise<UserRecord> {
+  return await auth.createUser({ displayName });
 }
 
 /**

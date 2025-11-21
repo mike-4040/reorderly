@@ -5,13 +5,17 @@
 
 import { onRequest } from 'firebase-functions/https';
 
-import { generateCustomToken, getOrCreateUser } from '../../auth/firebase/user-manager';
+import { createAuthUser, generateCustomToken } from '../../auth/firebase/user-manager';
 import {
   getMerchantByProviderId,
   updateMerchant,
   upsertMerchant,
 } from '../../merchants/repository';
 import { fetchMerchantInfo } from '../../providers/square/client';
+import {
+  getOrCreateUser as getOrCreateAppUser,
+  getUserByMerchantAndProvider,
+} from '../../users/repository';
 import { config } from '../../utils/config';
 import { ExternalError, handleError } from '../../utils/error-handler';
 import { validateAndConsumeState } from '../shared/state';
@@ -30,28 +34,21 @@ export const squareCallback = onRequest(async (req, res) => {
 
     // Check for OAuth errors from Square
     if (oauthError) {
-      handleError(
-        new Error('squareCallback_oauthError', {
-          cause: { error: oauthError },
-        }),
-      );
-
-      const errorUrl = `${config.errorPageUrl}?error=oauth_failed`;
-      res.redirect(errorUrl);
-      return;
+      throw new ExternalError('squareCallback_oauthError', {
+        cause: { error: oauthError },
+      });
     }
 
     // Validate state
-    if (!state || typeof state !== 'string') {
-      throw new ExternalError('Missing or invalid state parameter');
+    if (typeof state !== 'string') {
+      throw new ExternalError('squareCallback_invalidState');
     }
-
-    const { flow } = await validateAndConsumeState(state);
 
     // Validate code
-    if (!code || typeof code !== 'string') {
-      throw new ExternalError('Missing authorization code');
+    if (typeof code !== 'string') {
+      throw new ExternalError('squareCallback_missingCode');
     }
+    const { flow } = await validateAndConsumeState(state);
 
     // Exchange code for tokens
     const tokens = await exchangeCodeForTokens(code);
@@ -76,11 +73,21 @@ export const squareCallback = onRequest(async (req, res) => {
         },
       });
 
-      // Create or get Firebase Auth user
-      const firebaseUser = await getOrCreateUser(merchant.id, merchant.name);
+      // Find existing App User who previously connected this Square account
+      const appUser = await getUserByMerchantAndProvider(merchant.id, tokens.merchantId);
 
-      // Generate custom token for web client to sign in
-      const customToken = await generateCustomToken(firebaseUser.uid);
+      // If no App User exists but merchant is connected, handle corrupted state
+      if (!appUser) {
+        throw new Error('squareCallback_loginFlow_appUserNotFound', {
+          cause: {
+            merchantId: merchant.id,
+            providerUserId: tokens.merchantId,
+          },
+        });
+      }
+
+      // Generate custom token for the user
+      const customToken = await generateCustomToken(appUser.id);
 
       const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 
@@ -112,11 +119,26 @@ export const squareCallback = onRequest(async (req, res) => {
 
     console.log({ merchant });
 
-    // Create or get Firebase Auth user
-    const firebaseUser = await getOrCreateUser(merchant.id, merchant.name);
+    // Check if App User already exists (user reconnecting via install button)
+    let appUser = await getUserByMerchantAndProvider(merchant.id, tokens.merchantId);
+
+    if (!appUser) {
+      // Create Firebase Auth user with unique auto-generated UID
+      // Note: Each person gets their own UID, even if accessing same merchant
+      const authUser = await createAuthUser(merchant.name);
+
+      // Create App User in Firestore
+      appUser = await getOrCreateAppUser({
+        id: authUser.uid,
+        merchantId: merchant.id,
+        accountSetupComplete: false,
+        providerUserId: tokens.merchantId,
+        role: 'owner', // First OAuth user is the business owner
+      });
+    }
 
     // Generate custom token for web client to sign in
-    const customToken = await generateCustomToken(firebaseUser.uid);
+    const customToken = await generateCustomToken(appUser.id);
 
     const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 

@@ -29,6 +29,8 @@ export async function fetchMerchantInfo(accessToken: string): Promise<MerchantIn
 
     const [merchant] = merchants;
 
+    console.log('Fetched merchant from Square API', { merchant });
+
     // Fetch locations
     const locationsResponse = await client.locations.list();
     const fetchedLocations = locationsResponse.locations ?? [];
