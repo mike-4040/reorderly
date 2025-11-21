@@ -6,7 +6,7 @@ The Reorderly application maintains two separate user systems that work together
 
 ## User Types
 
-### 1. Firestore User (`User`)
+### 1. App User (`User`)
 
 **Location:** `functions/src/users/types.ts`
 
@@ -42,7 +42,7 @@ The Reorderly application maintains two separate user systems that work together
 - List all users with access to a merchant
 - Store provider-specific user IDs (e.g., Square merchant ID)
 
-### 2. Firebase Auth User (`UserRecord`)
+### 2. Auth User (`UserRecord`)
 
 **Location:** Firebase Authentication service
 
@@ -83,7 +83,7 @@ The Reorderly application maintains two separate user systems that work together
 
 ```
 ┌─────────────────────────┐
-│  Firebase Auth User     │
+│  Auth User              │
 │  (UserRecord)           │
 │  uid: "abc123"          │
 │  displayName: "John"    │
@@ -92,7 +92,7 @@ The Reorderly application maintains two separate user systems that work together
             │ uid = id
             ▼
 ┌─────────────────────────┐
-│  Firestore User         │
+│  App User               │
 │  (User)                 │
 │  id: "abc123"           │
 │  merchantId: "merch_1"  │
@@ -108,7 +108,7 @@ The Reorderly application maintains two separate user systems that work together
 └─────────────────────────┘
 ```
 
-**The `uid` from Firebase Auth equals the `id` in Firestore User document**
+**The `uid` from Auth User equals the `id` in App User document**
 
 ## One-to-Many Relationship
 
@@ -134,14 +134,14 @@ This allows:
 
 ## When to Use Each
 
-### Use Firestore User (`User`) when:
+### Use App User (`User`) when:
 
 - Checking which merchant a user belongs to
 - Listing all users for a merchant
 - Tracking account setup status
 - Storing business logic data
 
-### Use Firebase Auth User (`UserRecord`) when:
+### Use Auth User (`UserRecord`) when:
 
 - Authenticating users
 - Generating tokens
@@ -150,15 +150,15 @@ This allows:
 
 ## Repository Functions
 
-### Firestore Users (`functions/src/users/repository.ts`)
+### App Users (`functions/src/users/repository.ts`)
 
 - `createUser(data)` - Create user in Firestore
 - `getUserById(uid)` - Get Firestore user
 - `updateUser(uid, data)` - Update Firestore user
 - `getUsersByMerchantId(merchantId)` - List users for merchant
-- `getOrCreateUser(data)` - Get or create Firestore user
+- `getOrCreateUser(data)` - Get or create App user
 
-### Firebase Auth Users (`functions/src/auth/firebase/user-manager.ts`)
+### Auth Users (`functions/src/auth/firebase/user-manager.ts`)
 
 - `getOrCreateUser(uid, displayName)` - Get or create auth user
 - `generateCustomToken(uid)` - Generate token for web login
