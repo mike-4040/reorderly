@@ -5,6 +5,11 @@
 import { Timestamp } from 'firebase-admin/firestore';
 
 /**
+ * User roles for role-based access control
+ */
+export type UserRole = 'owner' | 'admin' | 'manager' | 'staff';
+
+/**
  * User document in Firestore
  * Represents a Firebase Auth user and their relationship to merchants
  */
@@ -17,6 +22,8 @@ export interface User {
   accountSetupComplete: boolean;
   /** Optional: The provider user ID (e.g., Square merchant ID) */
   providerUserId?: string;
+  /** User role for permissions */
+  role: UserRole;
   /** When the user was created */
   createdAt: Timestamp;
   /** When the user was last updated */
@@ -35,6 +42,8 @@ export interface CreateUserData {
   accountSetupComplete: boolean;
   /** Optional provider user ID */
   providerUserId?: string;
+  /** User role for permissions */
+  role: UserRole;
 }
 
 /**
@@ -47,4 +56,6 @@ export interface UpdateUserData {
   accountSetupComplete?: boolean;
   /** Provider user ID */
   providerUserId?: string;
+  /** User role */
+  role?: UserRole;
 }

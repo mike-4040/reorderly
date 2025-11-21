@@ -22,6 +22,7 @@ export async function createUser(data: CreateUserData): Promise<User> {
     merchantId: data.merchantId,
     accountSetupComplete: data.accountSetupComplete,
     providerUserId: data.providerUserId,
+    role: data.role,
     createdAt: now,
     updatedAt: now,
   };
@@ -81,6 +82,31 @@ export async function getUsersByMerchantId(merchantId: string): Promise<User[]> 
   const snapshot = await collections.users.where('merchantId', '==', merchantId).get();
 
   return snapshot.docs.map((doc) => doc.data() as User);
+}
+
+/**
+ * Get user by merchantId and providerUserId
+ * Used for OAuth login to find the user who previously connected this provider
+ *
+ * @param merchantId - The merchant ID
+ * @param providerUserId - The provider user ID (e.g., Square merchant ID)
+ * @returns The user or null if not found
+ */
+export async function getUserByMerchantAndProvider(
+  merchantId: string,
+  providerUserId: string,
+): Promise<User | null> {
+  const snapshot = await collections.users
+    .where('merchantId', '==', merchantId)
+    .where('providerUserId', '==', providerUserId)
+    .limit(1)
+    .get();
+
+  if (snapshot.empty) {
+    return null;
+  }
+
+  return snapshot.docs[0].data() as User;
 }
 
 /**
