@@ -3,18 +3,20 @@ import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
+import { requireAuth } from '../utils/route-guards';
 
 interface WelcomeSearch {
   token?: string;
 }
 
 export const Route = createFileRoute('/welcome')({
-  component: Welcome,
   validateSearch: (search: Record<string, unknown>): WelcomeSearch => {
     return {
       token: typeof search.token === 'string' ? search.token : undefined,
     };
   },
+  beforeLoad: requireAuth,
+  component: Welcome,
 });
 
 function Welcome() {

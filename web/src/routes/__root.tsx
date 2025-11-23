@@ -1,39 +1,34 @@
-import { AppShell, Button, Group, Menu, Tabs } from '@mantine/core';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { AppShell, Center, Group, Loader, Tabs } from '@mantine/core';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { User } from 'firebase/auth';
 
-import { AuthProvider } from '../contexts/AuthProvider';
+import { UserAccountMenu } from '../components/UserAccountMenu';
 import { useAuth } from '../contexts/useAuth';
 
-export const Route = createRootRoute({
+interface RouterContext {
+  user: User | null;
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
 });
 
 function RootLayout() {
-  return (
-    <AuthProvider>
-      <RootLayoutContent />
-    </AuthProvider>
-  );
-}
-
-function RootLayoutContent() {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;
-  const { user, signOut } = useAuth();
+  const { user, isLoadingAuthState } = useAuth();
 
-  const handleSignOut = () => {
-    void (async () => {
-      try {
-        await signOut();
-        await navigate({ to: '/login' });
-      } catch (error) {
-        console.error('Sign out failed:', error);
-      }
-    })();
-  };
+  // Show loading spinner while checking auth state
+  if (isLoadingAuthState) {
+    return (
+      <Center h="100vh">
+        <Loader size="lg" />
+      </Center>
+    );
+  }
 
   return (
     <AppShell header={{ height: 60 }} padding="md" withBorder={false}>
@@ -49,41 +44,16 @@ function RootLayoutContent() {
           >
             <Tabs.List>
               <Tabs.Tab value="/">Home</Tabs.Tab>
-              <Tabs.Tab value="/suppliers">Suppliers</Tabs.Tab>
-              <Tabs.Tab value="/settings">Settings</Tabs.Tab>
+              {user && (
+                <>
+                  <Tabs.Tab value="/suppliers">Suppliers</Tabs.Tab>
+                  <Tabs.Tab value="/settings">Settings</Tabs.Tab>
+                </>
+              )}
             </Tabs.List>
           </Tabs>
 
-          <Group gap="sm">
-            {user ? (
-              <Menu>
-                <Menu.Target>
-                  <Button variant="subtle">{user.email}</Button>
-                </Menu.Target>
-                <Menu.Dropdown>
-                  <Menu.Item onClick={handleSignOut}>Sign Out</Menu.Item>
-                </Menu.Dropdown>
-              </Menu>
-            ) : (
-              <>
-                <Button
-                  variant="subtle"
-                  onClick={() => {
-                    void navigate({ to: '/login' });
-                  }}
-                >
-                  Sign In
-                </Button>
-                <Button
-                  onClick={() => {
-                    void navigate({ to: '/signup' });
-                  }}
-                >
-                  Sign Up
-                </Button>
-              </>
-            )}
-          </Group>
+          <UserAccountMenu />
         </Group>
       </AppShell.Header>
 
