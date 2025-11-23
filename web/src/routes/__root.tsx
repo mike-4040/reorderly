@@ -1,25 +1,21 @@
 import { AppShell, Center, Group, Loader, Tabs } from '@mantine/core';
-import { createRootRoute, Outlet } from '@tanstack/react-router';
+import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
+import { User } from 'firebase/auth';
 
 import { UserAccountMenu } from '../components/UserAccountMenu';
-import { AuthProvider } from '../contexts/AuthProvider';
 import { useAuth } from '../contexts/useAuth';
 
-export const Route = createRootRoute({
+interface RouterContext {
+  user: User | null;
+}
+
+export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
 });
 
 function RootLayout() {
-  return (
-    <AuthProvider>
-      <RootLayoutContent />
-    </AuthProvider>
-  );
-}
-
-function RootLayoutContent() {
   const navigate = useNavigate();
   const routerState = useRouterState();
   const currentPath = routerState.location.pathname;

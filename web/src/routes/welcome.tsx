@@ -15,7 +15,7 @@ export const Route = createFileRoute('/welcome')({
       token: typeof search.token === 'string' ? search.token : undefined,
     };
   },
-  beforeLoad: requireAuth(),
+  beforeLoad: requireAuth,
   component: Welcome,
 });
 
