@@ -4,7 +4,7 @@
 
 import { Alert, Button, Container, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
-import { useState, FormEvent } from 'react';
+import { useState, FormEvent, useEffect } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
 
@@ -14,11 +14,18 @@ export const Route = createFileRoute('/login')({
 
 function Login() {
   const navigate = useNavigate();
-  const { signIn } = useAuth();
+  const { user, signIn } = useAuth();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+  // Redirect to home if already authenticated
+  useEffect(() => {
+    if (user) {
+      void navigate({ to: '/' });
+    }
+  }, [user, navigate]);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();

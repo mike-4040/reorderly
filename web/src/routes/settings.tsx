@@ -4,18 +4,20 @@ import { useEffect } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
 import { getFunctionsUrl } from '../utils/env';
+import { requireAuth } from '../utils/route-guards';
 
 interface SettingsSearch {
   token?: string;
 }
 
 export const Route = createFileRoute('/settings')({
-  component: Settings,
   validateSearch: (search: Record<string, unknown>): SettingsSearch => {
     return {
       token: typeof search.token === 'string' ? search.token : undefined,
     };
   },
+  beforeLoad: requireAuth(),
+  component: Settings,
 });
 
 function Settings() {
