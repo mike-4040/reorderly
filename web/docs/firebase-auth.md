@@ -53,17 +53,19 @@ const { user, isLoadingAuthState, signInWithCustomToken, signOut } = useAuth();
 
 ## Protected Routes
 
-Routes are protected using TanStack Router's `beforeLoad` hook:
+Routes are protected using TanStack Router's `beforeLoad` hook with router context:
 
 ```typescript
-// src/utils/route-guards.ts
+// src/routes/protected.tsx
 import { requireAuth } from '../utils/route-guards';
 
 export const Route = createFileRoute('/protected')({
-  beforeLoad: requireAuth(),
+  beforeLoad: requireAuth,
   component: ProtectedPage,
 });
 ```
+
+The `requireAuth` guard receives auth state through TanStack Router's context (passed from `App.tsx`), making the dependency explicit and preventing timing issues.
 
 Currently protected routes:
 - `/welcome` - Post-OAuth onboarding
