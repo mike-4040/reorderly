@@ -1,5 +1,5 @@
 import { Button, Stack, Text, TextInput } from '@mantine/core';
-import { sendEmailVerification, updateEmail } from 'firebase/auth';
+import { verifyBeforeUpdateEmail } from 'firebase/auth';
 import { useState } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
@@ -22,10 +22,8 @@ export function EmailForm() {
     setError(null);
 
     try {
-      await updateEmail(user, email);
-      await sendEmailVerification(user);
-      // Reload user to refresh auth state immediately
-      await user.reload();
+      // Send verification email to new address; email only updates after verification
+      await verifyBeforeUpdateEmail(user, email);
       setSuccess(true);
       setEmail('');
     } catch (err) {
