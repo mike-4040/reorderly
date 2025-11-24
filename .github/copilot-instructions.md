@@ -51,3 +51,18 @@ import { readFile } from 'node:fs/promises';
 ```
 
 This is the modern Node.js standard and makes it explicit that you're importing from Node.js built-ins, not npm packages.
+
+## Development Workflow
+
+When implementing features or changes:
+
+- **Work in small, incremental steps** - Make one logical change at a time
+- **One file at a time** - Unless explicitly asked to work on multiple files, focus on a single file per iteration
+- **Commit-ready chunks** - Each step should result in working, testable code
+- **Ask before proceeding** - After completing a file or step, confirm before moving to the next
+
+This approach:
+- Reduces cognitive load and makes changes easier to review
+- Allows for course correction before too much code is written
+- Creates cleaner git history with focused commits
+- Makes it easier to test and validate each change

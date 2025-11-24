@@ -24,6 +24,12 @@ export interface User {
   providerUserId?: string;
   /** User role for permissions */
   role: UserRole;
+  /** When the email was verified */
+  emailVerifiedAt?: Timestamp;
+  /** When the last verification email was sent */
+  emailVerificationSentAt?: Timestamp;
+  /** When the user set their password */
+  passwordSetAt?: Timestamp;
   /** When the user was created */
   createdAt: Timestamp;
   /** When the user was last updated */
@@ -58,4 +64,10 @@ export interface UpdateUserData {
   providerUserId?: string;
   /** User role */
   role?: UserRole;
+  /** When the email was verified */
+  emailVerifiedAt?: Timestamp;
+  /** When the last verification email was sent */
+  emailVerificationSentAt?: Timestamp;
+  /** When the user set their password */
+  passwordSetAt?: Timestamp;
 }

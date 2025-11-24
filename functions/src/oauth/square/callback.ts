@@ -91,7 +91,7 @@ export const squareCallback = onRequest(async (req, res) => {
 
       const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 
-      const redirectUrl = `${config.onboardingUrl}/${destPage}?token=${customToken}`;
+      const redirectUrl = `${config.webUrl}/${destPage}?token=${customToken}`;
       res.redirect(redirectUrl);
       return;
     }
@@ -101,7 +101,6 @@ export const squareCallback = onRequest(async (req, res) => {
 
     // Save to Firestore
     const merchant = await upsertMerchant({
-      email: merchantInfo.email,
       name: merchantInfo.name,
       provider: 'square',
       providerMerchantId: merchantInfo.id,
@@ -142,7 +141,7 @@ export const squareCallback = onRequest(async (req, res) => {
 
     const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
 
-    const redirectUrl = `${config.onboardingUrl}/${destPage}?token=${customToken}`;
+    const redirectUrl = `${config.webUrl}/${destPage}?token=${customToken}`;
 
     res.redirect(redirectUrl);
   } catch (error) {

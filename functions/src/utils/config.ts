@@ -30,8 +30,8 @@ export const config = {
     };
   },
 
-  get onboardingUrl() {
-    return getRequiredEnv('ONBOARDING_URL');
+  get webUrl() {
+    return getRequiredEnv('WEB_URL');
   },
 
   get errorPageUrl() {

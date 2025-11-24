@@ -56,7 +56,6 @@ export async function upsertMerchant(input: MerchantInput): Promise<Merchant> {
   } else {
     // Create new merchant
     const newMerchant: Omit<Merchant, 'id'> = {
-      email: input.email,
       name: input.name,
       provider: input.provider,
       providerMerchantId: input.providerMerchantId,

@@ -2,8 +2,8 @@ import { Title, Text, Container } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
+import { EmailForm } from '../components/EmailForm';
 import { useAuth } from '../contexts/useAuth';
-import { requireAuth } from '../utils/route-guards';
 
 interface WelcomeSearch {
   token?: string;
@@ -15,13 +15,13 @@ export const Route = createFileRoute('/welcome')({
       token: typeof search.token === 'string' ? search.token : undefined,
     };
   },
-  beforeLoad: requireAuth,
   component: Welcome,
 });
 
 function Welcome() {
   const { token } = Route.useSearch();
-  const { signInWithCustomToken } = useAuth();
+  const { signInWithCustomToken, user, isLoadingAuthState } = useAuth();
+  console.log('Welcome:', { user, isLoadingAuthState });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -36,6 +36,26 @@ function Welcome() {
         });
     }
   }, [token, signInWithCustomToken, navigate]);
+
+  // Wait for auth to fully load before deciding what to show
+  if (isLoadingAuthState) {
+    return null;
+  }
+
+  // Show email form if user doesn't have email
+  if (user && !user.email) {
+    return (
+      <Container size="xs" mt="xl">
+        <Title order={1}>Welcome to Reorderly</Title>
+        <Text mt="md" mb="xl">
+          To get started, please add your email address. We'll use it to send you important updates
+          and enable account recovery.
+        </Text>
+
+        <EmailForm />
+      </Container>
+    );
+  }
 
   return (
     <Container>

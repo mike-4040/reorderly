@@ -1,7 +1,9 @@
-import { Title, Text, Container, Button, Stack } from '@mantine/core';
+import { Title, Text, Container, Button, Stack, Paper, Group } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
+import { sendEmailVerification } from 'firebase/auth';
 import { useEffect } from 'react';
 
+import { EmailForm } from '../components/EmailForm';
 import { useAuth } from '../contexts/useAuth';
 import { getFunctionsUrl } from '../utils/env';
 import { requireAuth } from '../utils/route-guards';
@@ -37,6 +39,7 @@ function Settings() {
         });
     }
   }, [token, signInWithCustomToken, navigate]);
+
   const functionsUrl = getFunctionsUrl();
   const squareLoginUrl = `${functionsUrl}/squareAuthorize?flow=login`;
   const squareInstallUrl = `${functionsUrl}/squareAuthorize?flow=install`;
@@ -45,6 +48,7 @@ function Settings() {
     <Container>
       <Title order={1}>Settings</Title>
       <Text mt="md">Configure your settings</Text>
+
       {!user && (
         <Stack mt="md" align="flex-start">
           <Button component="a" href={squareLoginUrl}>
@@ -55,12 +59,54 @@ function Settings() {
           </Button>
         </Stack>
       )}
+
       {user && (
-        <Stack mt="md" align="flex-start">
-          <Text>Logged in as {user.uid}</Text>
-          <Button onClick={() => void signOut()}>
-            Logout
-          </Button>
+        <Stack mt="xl" gap="xl">
+          {/* Email Section */}
+          <Paper withBorder p="md">
+            <Title order={3} mb="md">
+              Email Address
+            </Title>
+
+            {user.email ? (
+              <Group gap="md">
+                <Text>
+                  {user.email}{' '}
+                  {user.emailVerified ? (
+                    <Text span c="green" fw={500}>
+                      (Verified)
+                    </Text>
+                  ) : (
+                    <Text span c="orange" fw={500}>
+                      (Not Verified)
+                    </Text>
+                  )}
+                </Text>
+                {!user.emailVerified && (
+                  <Button
+                    size="xs"
+                    variant="light"
+                    onClick={() => void sendEmailVerification(user)}
+                  >
+                    Resend Verification
+                  </Button>
+                )}
+              </Group>
+            ) : (
+              <EmailForm />
+            )}
+          </Paper>
+
+          {/* Account Section */}
+          <Paper withBorder p="md">
+            <Title order={3} mb="md">
+              Account
+            </Title>
+            <Stack gap="md" align="flex-start">
+              <Text>User ID: {user.uid}</Text>
+              <Button onClick={() => void signOut()}>Logout</Button>
+            </Stack>
+          </Paper>
         </Stack>
       )}
     </Container>

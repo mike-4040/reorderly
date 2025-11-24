@@ -10,7 +10,8 @@
     "strict": true,
     "target": "es2022",
     "lib": ["es2022"],
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "types": ["node"]
   },
   "compileOnSave": true,
   "include": ["src"]

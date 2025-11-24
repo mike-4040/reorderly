@@ -57,7 +57,6 @@ export async function fetchMerchantInfo(accessToken: string): Promise<MerchantIn
     return {
       id: merchant.id ?? '',
       name: merchant.businessName ?? '',
-      email: merchant.mainLocationId ?? '', // Square doesn't provide email directly
       locations,
     };
   } catch (error) {

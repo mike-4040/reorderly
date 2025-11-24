@@ -1,4 +1,5 @@
 // @ts-check
+/// <reference types="node" />
 import eslint from '@eslint/js';
 import { defineConfig } from 'eslint/config';
 import tseslint from 'typescript-eslint';
@@ -25,6 +26,7 @@ export default defineConfig(
       import: importPlugin,
     },
     rules: {
+      '@typescript-eslint/unified-signatures': 'off', // Disabled due to ESLint bug with generics
       'import/order': [
         'error',
         {
