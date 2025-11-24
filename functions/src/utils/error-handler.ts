@@ -10,6 +10,8 @@ export interface ErrorResponse {
   message: string;
 }
 
+export type CFResponse<T> = Promise<{ success: true; data: T } | ErrorResponse>;
+
 /**
  * External error - safe to expose message to client
  */

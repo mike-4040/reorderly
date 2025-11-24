@@ -25,13 +25,12 @@ export const config = {
     return {
       clientId: getRequiredEnv('SQUARE_CLIENT_ID'),
       clientSecret: getRequiredEnv('SQUARE_CLIENT_SECRET'),
-      redirectUri: getRequiredEnv('SQUARE_REDIRECT_URI'), // TODO: Currently not used in code, only for documentation
       environment: env.SQUARE_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
     };
   },
 
-  get onboardingUrl() {
-    return getRequiredEnv('ONBOARDING_URL');
+  get webUrl() {
+    return getRequiredEnv('WEB_URL');
   },
 
   get errorPageUrl() {

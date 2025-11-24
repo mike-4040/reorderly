@@ -2,8 +2,8 @@ import { Title, Text, Container } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
+import { EmailForm } from '../components/EmailForm';
 import { useAuth } from '../contexts/useAuth';
-import { requireAuth } from '../utils/route-guards';
 
 interface WelcomeSearch {
   token?: string;
@@ -15,13 +15,12 @@ export const Route = createFileRoute('/welcome')({
       token: typeof search.token === 'string' ? search.token : undefined,
     };
   },
-  beforeLoad: requireAuth,
   component: Welcome,
 });
 
 function Welcome() {
   const { token } = Route.useSearch();
-  const { signInWithCustomToken } = useAuth();
+  const { signInWithCustomToken, user, isLoadingAuthState } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -37,10 +36,42 @@ function Welcome() {
     }
   }, [token, signInWithCustomToken, navigate]);
 
-  return (
-    <Container>
-      <Title order={1}>Welcome to Reorderly</Title>
-      <Text mt="md">Get started by connecting your first supplier.</Text>
-    </Container>
-  );
+  // Wait for auth to fully load before deciding what to show
+  if (isLoadingAuthState) {
+    return null;
+  }
+
+  // Redirect unauthenticated users without a token to home
+  if (!user && !token) {
+    void navigate({ to: '/', replace: true });
+    return null;
+  }
+
+  // Show email form if user doesn't have email
+  if (user && !user.email) {
+    return (
+      <Container size="xs" mt="xl">
+        <Title order={1}>Welcome to Reorderly</Title>
+        <Text mt="md" mb="xl">
+          To get started, please add your email address. We'll use it to send you important updates
+          and enable account recovery.
+        </Text>
+
+        <EmailForm />
+      </Container>
+    );
+  }
+
+  // Show generic welcome for authenticated users with email
+  if (user) {
+    return (
+      <Container>
+        <Title order={1}>Welcome to Reorderly</Title>
+        <Text mt="md">Get started by connecting your first supplier.</Text>
+      </Container>
+    );
+  }
+
+  // Waiting for token sign-in to complete
+  return null;
 }
