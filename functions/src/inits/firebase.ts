@@ -19,3 +19,6 @@ export const auth = getAuth();
  * Firestore instance
  */
 export const db = getFirestore();
+
+// Configure Firestore settings
+db.settings({ ignoreUndefinedProperties: true });
