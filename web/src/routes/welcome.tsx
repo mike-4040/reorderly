@@ -41,6 +41,12 @@ function Welcome() {
     return null;
   }
 
+  // Redirect unauthenticated users without a token to home
+  if (!user && !token) {
+    void navigate({ to: '/', replace: true });
+    return null;
+  }
+
   // Show email form if user doesn't have email
   if (user && !user.email) {
     return (
@@ -56,10 +62,16 @@ function Welcome() {
     );
   }
 
-  return (
-    <Container>
-      <Title order={1}>Welcome to Reorderly</Title>
-      <Text mt="md">Get started by connecting your first supplier.</Text>
-    </Container>
-  );
+  // Show generic welcome for authenticated users with email
+  if (user) {
+    return (
+      <Container>
+        <Title order={1}>Welcome to Reorderly</Title>
+        <Text mt="md">Get started by connecting your first supplier.</Text>
+      </Container>
+    );
+  }
+
+  // Waiting for token sign-in to complete
+  return null;
 }
