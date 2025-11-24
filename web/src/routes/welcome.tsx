@@ -21,7 +21,6 @@ export const Route = createFileRoute('/welcome')({
 function Welcome() {
   const { token } = Route.useSearch();
   const { signInWithCustomToken, user, isLoadingAuthState } = useAuth();
-  console.log('Welcome:', { user, isLoadingAuthState });
   const navigate = useNavigate();
 
   useEffect(() => {

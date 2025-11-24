@@ -3,6 +3,7 @@ import { sendEmailVerification, updateEmail } from 'firebase/auth';
 import { useState } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
+import { digProperty } from '../utils/object';
 
 export function EmailForm() {
   const { user } = useAuth();
@@ -23,13 +24,25 @@ export function EmailForm() {
     try {
       await updateEmail(user, email);
       await sendEmailVerification(user);
+      // Reload user to refresh auth state immediately
+      await user.reload();
       setSuccess(true);
       setEmail('');
     } catch (err) {
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError('Failed to set email');
+      const errCode = digProperty(err, 'code');
+
+      switch (errCode) {
+        case 'auth/requires-recent-login':
+          setError('For security, please sign in again before updating your email');
+          break;
+        case 'auth/email-already-in-use':
+          setError('This email is already in use by another account');
+          break;
+        case 'auth/invalid-email':
+          setError('Please enter a valid email address');
+          break;
+        default:
+          setError(err instanceof Error ? err.message : 'Failed to set email');
       }
     } finally {
       setIsSubmitting(false);
