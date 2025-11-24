@@ -11,12 +11,16 @@
         ".prettierignore",
         ".prettierrc",
         "docs",
-        "eslint.config.js",
+        "emulator-data",
+        "eslint.config.mjs",
         "firebase-debug.*.log",
         "firebase-debug.log",
+        "firestore-debug.log",
         "node_modules",
         "scripts",
-        "src"
+        "src",
+        "tsconfig.dev.json",
+        "tsconfig.json"
       ],
       "predeploy": [
         "npm --prefix \"$RESOURCE_DIR\" run lint",
@@ -34,11 +38,7 @@
   },
   "hosting": {
     "public": "web/dist",
-    "ignore": [
-      "firebase.json",
-      "**/.*",
-      "**/node_modules/**"
-    ],
+    "ignore": ["firebase.json", "**/.*", "**/node_modules/**"],
     "rewrites": [
       {
         "source": "**",
