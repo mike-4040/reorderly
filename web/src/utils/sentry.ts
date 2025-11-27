@@ -1,4 +1,4 @@
-import * as Sentry from '@sentry/react';
+import * as Sentry from "@sentry/react";
 
 const dsn = import.meta.env.VITE_SENTRY_DSN as string | undefined;
 
@@ -18,7 +18,7 @@ export function initSentry(): void {
 
   Sentry.init({
     dsn,
-    environment: environment || 'development',
+    environment: environment || "development",
     // Disable tracing
     tracesSampleRate: 0,
     // Disable session replay
@@ -33,7 +33,7 @@ export function initSentry(): void {
  */
 export function captureException(error: unknown): void {
   if (import.meta.env.DEV) {
-    console.error('Captured error:', error);
+    console.error("Captured error:", error);
   }
 
   // Only capture if DSN is configured
@@ -47,8 +47,11 @@ export function captureException(error: unknown): void {
  */
 export function captureMessage(
   message: string,
-  level: Sentry.SeverityLevel = 'info',
+  level: Sentry.SeverityLevel = "info"
 ): void {
+  if (import.meta.env.DEV) {
+    console.error(`Captured message [${level}]: ${message}`);
+  }
   // Only capture if DSN is configured
   if (dsn) {
     Sentry.captureMessage(message, level);

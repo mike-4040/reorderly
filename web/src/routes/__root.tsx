@@ -16,7 +16,7 @@ interface RouterContext {
 function ErrorComponent({ error }: { error: Error }) {
   useEffect(() => {
     // Capture error to Sentry only once
-    captureException(new Error('RootRoute_Error', { cause: error }));
+    captureException(error);
   }, [error]);
 
   return (
