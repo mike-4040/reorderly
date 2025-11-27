@@ -4,6 +4,7 @@ import { useState } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
 import { digProperty } from '../utils/object';
+import { captureException } from '../utils/sentry';
 
 export function EmailForm() {
   const { user } = useAuth();
@@ -40,6 +41,7 @@ export function EmailForm() {
           setError('Please enter a valid email address');
           break;
         default:
+          captureException(new Error('EmailForm_setEmailError', { cause: err }));
           setError(err instanceof Error ? err.message : 'Failed to set email');
       }
     } finally {
