@@ -6,28 +6,7 @@ Authentication uses Firebase Auth with email/password, but accounts are created 
 
 ## Quick Start
 
-### Environment Variables
-
-**Required Doppler secrets** (in `web` project):
-- `VITE_FIREBASE_API_KEY`
-- `VITE_FIREBASE_AUTH_DOMAIN`
-- `VITE_FIREBASE_PROJECT_ID`
-- `VITE_FIREBASE_APP_ID`
-
-Get these from: Firebase Console → Project Settings → General → Your apps → Web app
-
-Download secrets from Doppler:
-
-```bash
-# Development
-npm run secrets-dev
-
-# Staging
-npm run secrets-stg
-
-# Production
-npm run secrets-prd
-```
+See [configuration.md](./configuration.md) for required environment variables and setup.
 
 ## Authentication Flow
 

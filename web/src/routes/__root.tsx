@@ -1,4 +1,4 @@
-import { AppShell, Center, Group, Loader, Tabs } from '@mantine/core';
+import { AppShell, Button, Center, Group, Loader, Stack, Tabs, Text, Title } from '@mantine/core';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
@@ -6,13 +6,30 @@ import { User } from 'firebase/auth';
 
 import { UserAccountMenu } from '../components/UserAccountMenu';
 import { useAuth } from '../contexts/useAuth';
+import { captureException } from '../utils/sentry';
 
 interface RouterContext {
   user: User | null;
 }
 
+function ErrorComponent({ error }: { error: Error }) {
+  // Capture error to Sentry
+  captureException(new Error('RootRoute_Error', { cause: error }));
+
+  return (
+    <Center h="100vh">
+      <Stack align="center" gap="md">
+        <Title order={1}>Something went wrong</Title>
+        <Text c="dimmed">We've been notified and are looking into it.</Text>
+        <Button onClick={() => window.location.reload()}>Reload Page</Button>
+      </Stack>
+    </Center>
+  );
+}
+
 export const Route = createRootRouteWithContext<RouterContext>()({
   component: RootLayout,
+  errorComponent: ErrorComponent,
 });
 
 function RootLayout() {

@@ -19,6 +19,7 @@
   "dependencies": {
     "@mantine/core": "^8.3.8",
     "@mantine/hooks": "^8.3.8",
+    "@sentry/react": "^10.27.0",
     "@tanstack/react-router": "^1.136.18",
     "@tanstack/react-router-devtools": "^1.136.18",
     "firebase": "^12.6.0",
