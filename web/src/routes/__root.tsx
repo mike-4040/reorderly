@@ -3,6 +3,7 @@ import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { User } from 'firebase/auth';
+import { useEffect } from 'react';
 
 import { UserAccountMenu } from '../components/UserAccountMenu';
 import { useAuth } from '../contexts/useAuth';
@@ -13,8 +14,10 @@ interface RouterContext {
 }
 
 function ErrorComponent({ error }: { error: Error }) {
-  // Capture error to Sentry
-  captureException(new Error('RootRoute_Error', { cause: error }));
+  useEffect(() => {
+    // Capture error to Sentry only once
+    captureException(new Error('RootRoute_Error', { cause: error }));
+  }, [error]);
 
   return (
     <Center h="100vh">

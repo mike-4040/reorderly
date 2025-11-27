@@ -6,13 +6,13 @@ Errors are automatically captured and reported to Sentry. In development, errors
 
 ## Automatic Error Capture
 
-The app uses an `ErrorBoundary` component that catches all React rendering errors:
+TanStack Router automatically catches React rendering errors and displays a custom error screen:
 
-- Displays a user-friendly error screen
-- Reports errors to Sentry with component stack trace
+- Shows a user-friendly error message
+- Reports errors to Sentry automatically
 - Provides a reload button for recovery
 
-The ErrorBoundary wraps the entire app, so you don't need to do anything special - it just works.
+This works for all errors that occur within route components - no manual setup needed.
 
 ## Manual Error Capture
 

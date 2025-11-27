@@ -1,11 +1,12 @@
 import * as Sentry from '@sentry/react';
 
+const dsn = import.meta.env.VITE_SENTRY_DSN as string | undefined;
+
 /**
  * Initialize Sentry for error capturing
  * Call this once at application startup
  */
 export function initSentry(): void {
-  const dsn = import.meta.env.VITE_SENTRY_DSN as string | undefined;
   const environment = import.meta.env.VITE_SENTRY_ENVIRONMENT as
     | string
     | undefined;
@@ -34,7 +35,11 @@ export function captureException(error: unknown): void {
   if (import.meta.env.DEV) {
     console.error('Captured error:', error);
   }
-  Sentry.captureException(error);
+
+  // Only capture if DSN is configured
+  if (dsn) {
+    Sentry.captureException(error);
+  }
 }
 
 /**
@@ -44,5 +49,8 @@ export function captureMessage(
   message: string,
   level: Sentry.SeverityLevel = 'info',
 ): void {
-  Sentry.captureMessage(message, level);
+  // Only capture if DSN is configured
+  if (dsn) {
+    Sentry.captureMessage(message, level);
+  }
 }
