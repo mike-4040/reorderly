@@ -2,6 +2,8 @@
  * Error handling utilities
  */
 
+import { captureException } from './sentry';
+
 /**
  * Error response structure
  */
@@ -29,6 +31,7 @@ export function handleError(error: unknown): ErrorResponse {
   // External error - log and return message
   if (error instanceof ExternalError) {
     console.error(error);
+    captureException(error);
     return {
       success: false,
       message: error.message,
@@ -46,6 +49,7 @@ export function handleError(error: unknown): ErrorResponse {
   // Internal error (standard Error) - log and return generic message
   if (error instanceof Error) {
     console.error(error);
+    captureException(error);
     return {
       success: false,
       message: 'Internal Server Error',
@@ -54,6 +58,7 @@ export function handleError(error: unknown): ErrorResponse {
 
   // Unknown error type - log and return generic message
   console.error(error);
+  captureException(error);
   return {
     success: false,
     message: 'Internal Server Error',

@@ -8,6 +8,19 @@ Documentation: [docs.doppler.com](https://docs.doppler.com/docs/accessing-secret
 
 For local development or emulator use, we download them into a `.env` file.
 
+### Required Variables
+
+- `SQUARE_CLIENT_ID` - Square OAuth client ID
+- `SQUARE_CLIENT_SECRET` - Square OAuth client secret
+- `WEB_URL` - Base URL of the web application
+
+### Optional Variables
+
+- `SQUARE_ENVIRONMENT` - Square environment (`production` or `sandbox`, defaults to `sandbox`)
+- `ERROR_PAGE_URL` - Error page path (defaults to `/error`)
+- `SENTRY_DSN` - Sentry DSN for error tracking (omit to disable Sentry)
+- `SENTRY_ENVIRONMENT` - Sentry environment name (defaults to `development`)
+
 ## Usage
 
 ```typescript
@@ -46,4 +59,23 @@ export const config = {
     };
   },
 };
+```
+
+## Error Tracking
+
+Sentry is automatically initialized on startup if `SENTRY_DSN` is provided. Errors are automatically captured by the `handleError` utility.
+
+To manually capture errors or messages:
+
+```typescript
+import { captureException, captureMessage } from './utils/sentry';
+
+try {
+  // Your code
+} catch (error) {
+  captureException(error);
+}
+
+// Or capture a message
+captureMessage('Something noteworthy happened', 'info');
 ```
