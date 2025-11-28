@@ -60,22 +60,3 @@ export const config = {
   },
 };
 ```
-
-## Error Tracking
-
-Sentry is automatically initialized on startup if `SENTRY_DSN` is provided. Errors are automatically captured by the `handleError` utility.
-
-To manually capture errors or messages:
-
-```typescript
-import { captureException, captureMessage } from './utils/sentry';
-
-try {
-  // Your code
-} catch (error) {
-  captureException(error);
-}
-
-// Or capture a message
-captureMessage('Something noteworthy happened', 'info');
-```
