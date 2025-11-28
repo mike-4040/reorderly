@@ -14,7 +14,7 @@ let initialized = false;
  */
 export function initSentry(): void {
   const dsn = env.SENTRY_DSN;
-  const environment = env.SENTRY_ENVIRONMENT && 'development';
+  const environment = env.SENTRY_ENVIRONMENT ?? 'development';
 
   // Skip initialization if DSN is not provided (e.g., in development)
   if (!dsn) {
