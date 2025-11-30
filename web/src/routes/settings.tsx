@@ -1,6 +1,6 @@
-import { Title, Text, Container, Button, Stack, Paper, Group } from '@mantine/core';
+import { Title, Text, Container, Button, Stack, Paper, Group, PasswordInput } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
-import { sendEmailVerification } from 'firebase/auth';
+import { sendEmailVerification, updatePassword } from 'firebase/auth';
 import { useEffect, useState } from 'react';
 
 import { EmailForm } from '../components/EmailForm';
@@ -29,6 +29,11 @@ function Settings() {
   const navigate = useNavigate();
   const [resendSuccess, setResendSuccess] = useState(false);
   const [resendError, setResendError] = useState<string | null>(null);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [passwordError, setPasswordError] = useState<string | null>(null);
+  const [passwordSuccess, setPasswordSuccess] = useState(false);
+  const [isSettingPassword, setIsSettingPassword] = useState(false);
 
   useEffect(() => {
     if (token) {
@@ -65,6 +70,49 @@ function Settings() {
         default:
           setResendError('Failed to send verification email. Please try again.');
       }
+    }
+  };
+
+  const handleSetPassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) return;
+
+    setPasswordError(null);
+    setPasswordSuccess(false);
+
+    if (password !== confirmPassword) {
+      setPasswordError('Passwords do not match');
+      return;
+    }
+
+    if (password.length < 6) {
+      setPasswordError('Password must be at least 6 characters');
+      return;
+    }
+
+    setIsSettingPassword(true);
+
+    try {
+      await updatePassword(user, password);
+      setPasswordSuccess(true);
+      setPassword('');
+      setConfirmPassword('');
+      // Clear success message after 5 seconds
+      setTimeout(() => setPasswordSuccess(false), 5000);
+    } catch (err) {
+      const errCode = digProperty(err, 'code');
+      switch (errCode) {
+        case 'auth/requires-recent-login':
+          setPasswordError('For security, please sign in again before setting a password');
+          break;
+        case 'auth/weak-password':
+          setPasswordError('Password is too weak. Please use a stronger password');
+          break;
+        default:
+          setPasswordError('Failed to set password. Please try again.');
+      }
+    } finally {
+      setIsSettingPassword(false);
     }
   };
 
@@ -135,6 +183,43 @@ function Settings() {
             ) : (
               <EmailForm />
             )}
+          </Paper>
+
+          {/* Password Section */}
+          <Paper withBorder p="md">
+            <Title order={3} mb="md">
+              Password
+            </Title>
+
+            <form onSubmit={(e) => void handleSetPassword(e)}>
+              <Stack gap="md">
+                <PasswordInput
+                  label="New Password"
+                  placeholder="Enter new password"
+                  value={password}
+                  onChange={(e) => setPassword(e.currentTarget.value)}
+                  required
+                  disabled={isSettingPassword}
+                />
+                <PasswordInput
+                  label="Confirm Password"
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.currentTarget.value)}
+                  required
+                  disabled={isSettingPassword}
+                  error={passwordError}
+                />
+                <Button type="submit" loading={isSettingPassword} style={{ alignSelf: 'flex-start' }}>
+                  Set Password
+                </Button>
+                {passwordSuccess && (
+                  <Text c="green" size="sm">
+                    Password set successfully!
+                  </Text>
+                )}
+              </Stack>
+            </form>
           </Paper>
 
           {/* Account Section */}

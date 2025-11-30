@@ -78,7 +78,7 @@ export const squareCallback = onRequest(async (req, res) => {
 
       // If no App User exists but merchant is connected, handle corrupted state
       if (!appUser) {
-        throw new Error('squareCallback_loginFlow_appUserNotFound', {
+        throw new ExternalError('squareCallback_loginFlow_appUserNotFound', {
           cause: {
             merchantId: merchant.id,
             providerUserId: tokens.merchantId,
@@ -145,12 +145,8 @@ export const squareCallback = onRequest(async (req, res) => {
 
     res.redirect(redirectUrl);
   } catch (error) {
-    handleError(error);
-
-    // Extract error type from error message if available
-    const errorType = error instanceof Error ? error.message : 'oauth_error';
-
-    const errorUrl = `${config.errorPageUrl}?error=${errorType}`;
+    const errorResponse = handleError(error);
+    const errorUrl = `${config.webUrl}?error=${encodeURIComponent(errorResponse.message)}`;
     res.redirect(errorUrl);
   }
 });

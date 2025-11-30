@@ -2,11 +2,12 @@
  * Login page with email/password authentication
  */
 
-import { Alert, Button, Container, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
+import { Alert, Button, Container, Divider, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, FormEvent, useEffect } from 'react';
 
 import { useAuth } from '../contexts/useAuth';
+import { getFunctionsUrl } from '../utils/env';
 
 export const Route = createFileRoute('/login')({
   component: Login,
@@ -107,6 +108,18 @@ function Login() {
           </Button>
         </Stack>
       </form>
+
+      <Divider label="or" labelPosition="center" my="lg" />
+
+      <Button
+        component="a"
+        href={`${getFunctionsUrl()}/squareAuthorize?flow=login`}
+        variant="light"
+        size="lg"
+        fullWidth
+      >
+        Login with Square
+      </Button>
     </Container>
   );
 }
