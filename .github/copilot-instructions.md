@@ -52,6 +52,21 @@ import { readFile } from 'node:fs/promises';
 
 This is the modern Node.js standard and makes it explicit that you're importing from Node.js built-ins, not npm packages.
 
+## TypeScript Imports
+
+**NEVER use `import type` or inline type imports.** Always use regular imports for both types and values:
+
+```typescript
+// ❌ WRONG - Do not use
+import type { User } from 'firebase/auth';
+import { updatePassword, type User } from 'firebase/auth';
+
+// ✅ CORRECT - Always use
+import { User, updatePassword } from 'firebase/auth';
+```
+
+This project is configured with `@typescript-eslint/consistent-type-imports` set to `prefer: "no-type-imports"`.
+
 ## Development Workflow
 
 When implementing features or changes:
