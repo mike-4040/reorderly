@@ -169,11 +169,9 @@ Error codes:
 ### Next Steps
 
 1. **Test the flow** with Square sandbox credentials
-2. **Set up error page** to handle OAuth errors
-3. **Set up success page** to show connection status
-4. **Implement token refresh** logic (tokens expire in 30 days)
-5. **Add webhook handling** for revocation events
-6. **Deploy to staging** with `npm run deploy-stg`
+2. **Implement token refresh** logic (tokens expire in 30 days)
+3. **Add webhook handling** for revocation events
+4. **Deploy to staging** with `npm run deploy-stg`
 
 ### Deployment
 

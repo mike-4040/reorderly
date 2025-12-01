@@ -12,12 +12,11 @@ For local development or emulator use, we download them into a `.env` file.
 
 - `SQUARE_CLIENT_ID` - Square OAuth client ID
 - `SQUARE_CLIENT_SECRET` - Square OAuth client secret
-- `WEB_URL` - Base URL of the web application
+- `WEB_URL` - Base URL of the web application (errors redirect to home page with query param)
 
 ### Optional Variables
 
 - `SQUARE_ENVIRONMENT` - Square environment (`production` or `sandbox`, defaults to `sandbox`)
-- `ERROR_PAGE_URL` - Error page path (defaults to `/error`)
 - `SENTRY_DSN` - Sentry DSN for error tracking (omit to disable Sentry)
 - `SENTRY_ENVIRONMENT` - Sentry environment name (defaults to `development`)
 
@@ -27,8 +26,8 @@ For local development or emulator use, we download them into a `.env` file.
 import { config } from './utils/config';
 
 // Access configuration
-const clientId = config.square.clientId;
-const onboardingUrl = config.onboardingUrl;
+const { clientId } = config.square;
+const { webUrl } = config;
 ```
 
 ## How It Works

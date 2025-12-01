@@ -32,8 +32,4 @@ export const config = {
   get webUrl() {
     return getRequiredEnv('WEB_URL');
   },
-
-  get errorPageUrl() {
-    return env.ERROR_PAGE_URL ?? '/error';
-  },
 } as const;
