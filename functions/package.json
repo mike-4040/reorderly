@@ -12,10 +12,10 @@
     "deploy-stg": "firebase deploy --project reorderly-staging --only functions",
     "logs": "firebase functions:log",
     "tunnel": "ngrok http --url=reorderly.ngrok.app 3302",
-    "migrate": "doppler run -p backend -c dev -- node --env-file .env node_modules/node-pg-migrate/bin/node-pg-migrate.js -d POSTGRES_URL up",
-    "migrate-down": "doppler run -p backend -c dev -- node --env-file .env node_modules/node-pg-migrate/bin/node-pg-migrate.js -d POSTGRES_URL down",
-    "migrate-stg": "doppler run -p backend -c stg -- node --env-file .env node_modules/node-pg-migrate/bin/node-pg-migrate.js -d POSTGRES_URL up",
-    "migrate-prd": "doppler run -p backend -c prd -- node --env-file .env node_modules/node-pg-migrate/bin/node-pg-migrate.js -d POSTGRES_URL up"
+    "migrate": "doppler run -p backend -c dev -- npx node-pg-migrate -d POSTGRES_URL up",
+    "migrate-down": "doppler run -p backend -c dev -- npx node-pg-migrate -d POSTGRES_URL down",
+    "migrate-stg": "doppler run -p backend -c stg -- npx node-pg-migrate -d POSTGRES_URL up",
+    "migrate-prd": "doppler run -p backend -c prd -- npx node-pg-migrate -d POSTGRES_URL up"
   },
   "engines": {
     "node": "22"
