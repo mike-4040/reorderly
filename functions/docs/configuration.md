@@ -13,6 +13,7 @@ For local development or emulator use, we download them into a `.env` file.
 - `SQUARE_CLIENT_ID` - Square OAuth client ID
 - `SQUARE_CLIENT_SECRET` - Square OAuth client secret
 - `WEB_URL` - Base URL of the web application (errors redirect to home page with query param)
+- `POSTGRES_URL` - PostgreSQL connection string (format: `postgres://user:password@host:port/database`)
 
 ### Optional Variables
 
