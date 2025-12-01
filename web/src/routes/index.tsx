@@ -1,4 +1,4 @@
-import { Alert } from '@mantine/core';
+import { Alert, Container } from '@mantine/core';
 import { createFileRoute } from '@tanstack/react-router';
 
 import { Dashboard } from '../components/Dashboard';
@@ -23,13 +23,13 @@ function Home() {
   const { error } = Route.useSearch();
 
   return (
-    <>
+    <Container>
       {error && (
         <Alert color="red" title="Error" mb="xl">
           {error}
         </Alert>
       )}
       {user ? <Dashboard /> : <Marketing />}
-    </>
+    </Container>
   );
 }
