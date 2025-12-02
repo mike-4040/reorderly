@@ -150,6 +150,8 @@ type MerchantRow = Database['public']['Tables']['merchants']['Row'];
 
 The generated file should **not** be manually edited - regenerate it after schema changes.
 
+**Important:** The `pg` driver returns PostgreSQL `BIGINT`/`BIGSERIAL` columns as strings at runtime to preserve precision, even though the generated types show them as `number`. Always use `string` type for ID parameters in your queries.
+
 ### Centralized Datastore
 
 All database queries are centralized in `src/datastore/postgres.ts` for consistency and maintainability.
