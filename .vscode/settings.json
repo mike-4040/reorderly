@@ -5,7 +5,8 @@
         "plpgsql",
         "predeploy",
         "reorderly",
-        "signup"
+        "signup",
+        "supabase"
     ],
     "chatgpt.commentCodeLensEnabled": false,
     "chat.checkpoints.showFileChanges": true,

@@ -8,7 +8,12 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default defineConfig(
   {
-    ignores: ['lib/**/*', 'eslint.config.mjs', 'package-lock.json'],
+    ignores: [
+      'lib/**/*',
+      'eslint.config.mjs',
+      'package-lock.json',
+      'src/datastore/types/generated.ts',
+    ],
   },
   eslint.configs.recommended,
   tseslint.configs.strictTypeChecked,

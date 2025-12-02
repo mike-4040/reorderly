@@ -11,6 +11,7 @@ docker compose up -d
 ```
 
 This starts PostgreSQL on port 3310 with:
+
 - User: `postgres`
 - Password: `postgres`
 - Database: `reorderly`
@@ -35,6 +36,7 @@ The project uses `node-pg-migrate` for database schema migrations. Migration fil
 ### Environment Configuration
 
 Database connection strings are managed via Doppler:
+
 - **dev**: Local PostgreSQL (localhost:3310)
 - **stg**: Staging database
 - **prd**: Production database
@@ -72,6 +74,7 @@ npm run migrate-prd
 ```
 
 All migration commands:
+
 - Pull database URL from Doppler for the specific environment
 - Run `node-pg-migrate up` to apply pending migrations (or `down` for rollback)
 - Track applied migrations in the `pgmigrations` table
@@ -105,3 +108,64 @@ DROP TABLE IF EXISTS users;
 ```
 
 **Note:** In the down migration, drop dependent objects (indexes, triggers) before dropping the table.
+
+## Querying the Database
+
+### PostgreSQL Client
+
+The project uses a connection pool for database queries, located in `src/clients/postgres.ts`. The pool is lazily initialized to prevent issues during Firebase deployment.
+
+```typescript
+import { getPgPool } from './clients/postgres.js';
+
+const pool = getPgPool();
+const result = await pool.query('SELECT * FROM merchants WHERE id = $1', [id]);
+```
+
+### Auto-Generated Types
+
+TypeScript types are automatically generated from the database schema using Supabase CLI. This ensures type safety and keeps types in sync with the database.
+
+**Generate types:**
+
+```bash
+npm run db-types
+```
+
+This generates `src/datastore/types/generated.ts` with types for all tables.
+
+**When to regenerate:**
+
+- After running migrations that modify schema
+- When tables or columns are added/removed/modified
+- After type changes
+
+**Usage:**
+
+```typescript
+import { Database } from './datastore/types/generated.js';
+
+type MerchantRow = Database['public']['Tables']['merchants']['Row'];
+```
+
+The generated file should **not** be manually edited - regenerate it after schema changes.
+
+**Important:** The `pg` driver returns PostgreSQL `BIGINT`/`BIGSERIAL` columns as strings at runtime to preserve precision, even though the generated types show them as `number`. Always use `string` type for ID parameters in your queries.
+
+### Centralized Datastore
+
+All database queries are centralized in `src/datastore/postgres.ts` for consistency and maintainability.
+
+Example:
+
+```typescript
+import { getMerchantById } from './datastore/postgres.js';
+
+const merchant = await getMerchantById('123');
+```
+
+When adding new queries, add them to the datastore file with:
+
+- Generated types for row results
+- Parameterized queries to prevent SQL injection
+- JSDoc comments explaining the query's purpose

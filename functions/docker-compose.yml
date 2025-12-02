@@ -7,7 +7,7 @@ services:
       POSTGRES_PASSWORD: postgres
       POSTGRES_DB: reorderly
     ports:
-      - "3310:5432"
+      - '3310:5432'
     volumes:
       - postgres-data:/var/lib/postgresql
 

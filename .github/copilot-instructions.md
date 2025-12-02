@@ -67,6 +67,64 @@ import { User, updatePassword } from 'firebase/auth';
 
 This project is configured with `@typescript-eslint/consistent-type-imports` set to `prefer: "no-type-imports"`.
 
+## Database Best Practices
+
+### PostgreSQL Client
+
+Use lazy initialization to avoid issues during Firebase deployment/analysis:
+
+```typescript
+// ✅ CORRECT - Lazy initialization
+export function getPgPool(): Pool {
+  if (!pool) {
+    pool = new Pool({ connectionString: config.postgresUrl });
+  }
+  return pool;
+}
+
+// ❌ WRONG - Immediate initialization
+export const pgPool = new Pool({ connectionString: config.postgresUrl });
+```
+
+### Database Types
+
+Always use auto-generated types from the database schema:
+
+```typescript
+// ✅ CORRECT - Use generated types
+import { Database } from './datastore/types/generated.js';
+type MerchantRow = Database['public']['Tables']['merchants']['Row'];
+
+// ❌ WRONG - Manual type definitions
+interface MerchantRow {
+  id: number;
+  name: string;
+}
+```
+
+After schema changes, regenerate types:
+```bash
+npm run db-types
+```
+
+### Centralized Queries
+
+Keep all database queries in `src/datastore/postgres.ts`:
+
+```typescript
+// ✅ CORRECT - Centralized datastore
+export async function getMerchantById(id: string): Promise<MerchantRow | null> {
+  const result = await getPgPool().query<MerchantRow>(
+    'SELECT * FROM merchants WHERE id = $1',
+    [id]
+  );
+  return result.rows[0] ?? null;
+}
+
+// ❌ WRONG - Queries scattered throughout codebase
+const result = await pool.query('SELECT * FROM merchants...');
+```
+
 ## Development Workflow
 
 When implementing features or changes:

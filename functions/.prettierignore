@@ -2,3 +2,4 @@ lib
 node_modules
 *.log
 package-lock.json
+src/datastore/types/generated.ts
