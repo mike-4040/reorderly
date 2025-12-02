@@ -5,16 +5,12 @@
 
 import { getPgPool } from '../clients/postgres.js';
 
+import { Database } from './types/generated.js';
+
 /**
  * Merchant entity from database
  */
-export interface MerchantRow {
-  id: string;
-  name: string | null;
-  email: string | null;
-  created_at: Date;
-  updated_at: Date;
-}
+type MerchantRow = Database['public']['Tables']['merchants']['Row'];
 
 /**
  * Get merchant by ID
