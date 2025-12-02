@@ -32,4 +32,8 @@ export const config = {
   get webUrl() {
     return getRequiredEnv('WEB_URL');
   },
+
+  get postgresUrl() {
+    return getRequiredEnv('POSTGRES_URL');
+  },
 } as const;

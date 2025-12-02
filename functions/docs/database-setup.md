@@ -105,3 +105,32 @@ DROP TABLE IF EXISTS users;
 ```
 
 **Note:** In the down migration, drop dependent objects (indexes, triggers) before dropping the table.
+
+## Querying the Database
+
+### PostgreSQL Client
+
+The project uses a connection pool for database queries, located in `src/clients/postgres.ts`. The pool is lazily initialized to prevent issues during Firebase deployment.
+
+```typescript
+import { getPgPool } from './clients/postgres.js';
+
+const pool = getPgPool();
+const result = await pool.query('SELECT * FROM merchants WHERE id = $1', [id]);
+```
+
+### Centralized Datastore
+
+All database queries are centralized in `src/datastore/postgres.ts` for consistency and maintainability.
+
+Example:
+```typescript
+import { getMerchantById } from './datastore/postgres.js';
+
+const merchant = await getMerchantById('123');
+```
+
+When adding new queries, add them to the datastore file with:
+- Typed interfaces for row results
+- Parameterized queries to prevent SQL injection
+- JSDoc comments explaining the query's purpose
