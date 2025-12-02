@@ -24,7 +24,7 @@
   "main": "lib/index.js",
   "dependencies": {
     "@sentry/node": "^10.27.0",
-    "firebase-admin": "^13.5.0",
+    "firebase-admin": "^13.6.0",
     "firebase-functions": "^6.0.1",
     "pg": "^8.16.3",
     "square": "^43.2.1",
