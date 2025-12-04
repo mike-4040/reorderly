@@ -21,56 +21,33 @@ export interface Location {
 }
 
 /**
- * OAuth token data
+ * Complete merchant record (flattened structure)
  */
-export interface TokenData {
-  access: string;
-  refresh: string;
-  expiresAt: Timestamp;
-  scopes: string[];
-}
-
-/**
- * Audit entry for tracking changes
- */
-export interface AuditEntry {
-  timestamp: Timestamp;
-  event: string;
-  appVersion?: string;
-  ip?: string;
-  userAgent?: string;
-  metadata?: Record<string, unknown>;
-}
-
-/**
- * Merchant metadata
- */
-export interface MerchantMetadata {
-  connectedAt: Timestamp;
-  lastRefreshedAt?: Timestamp;
-  appVersion?: string;
-  revoked: boolean;
-  scopesMismatch?: boolean;
-  onboardingCompleted: boolean;
-}
-
-/**
- * Base merchant data shared between all merchant types
- */
-export interface MerchantBase {
+export interface Merchant {
+  id: string; // Our internal ID (Firestore doc ID)
   name: string;
   provider: Provider;
   providerMerchantId: string; // merchant_id from provider
-  tokens: TokenData;
+  
+  // Token fields (flattened)
+  accessToken: string;
+  refreshToken: string;
+  tokenExpiresAt: Timestamp;
+  tokenScopes: string[];
+  
+  // Locations (complex structure, kept as array)
   locations: Location[];
-}
-
-/**
- * Complete merchant record
- */
-export interface Merchant extends MerchantBase {
-  id: string; // Our internal ID (Firestore doc ID)
-  metadata: MerchantMetadata;
+  
+  // Metadata fields (flattened)
+  connectedAt: Timestamp;
+  lastRefreshedAt?: Timestamp;
+  revoked: boolean;
+  scopesMismatch?: boolean;
+  onboardingCompleted: boolean;
+  
+  // Timestamps
+  createdAt: Timestamp;
+  updatedAt: Timestamp;
 }
 
 /**
@@ -85,8 +62,13 @@ export interface MerchantInfo {
 /**
  * Data required to create/update a merchant
  */
-export interface MerchantInput extends MerchantBase {
-  appVersion?: string;
-  ip?: string;
-  userAgent?: string;
+export interface MerchantInput {
+  name: string;
+  provider: Provider;
+  providerMerchantId: string;
+  accessToken: string;
+  refreshToken: string;
+  tokenExpiresAt: Timestamp;
+  tokenScopes: string[];
+  locations: Location[];
 }

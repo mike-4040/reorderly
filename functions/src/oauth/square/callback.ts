@@ -65,12 +65,10 @@ export const squareCallback = onRequest(async (req, res) => {
       console.log('Logging in existing merchant', { merchantId: merchant.id });
 
       await updateMerchant(merchant.id, {
-        tokens: {
-          access: tokens.accessToken,
-          refresh: tokens.refreshToken,
-          expiresAt: tokens.expiresAt,
-          scopes: tokens.scopes,
-        },
+        accessToken: tokens.accessToken,
+        refreshToken: tokens.refreshToken,
+        tokenExpiresAt: tokens.expiresAt,
+        tokenScopes: tokens.scopes,
       });
 
       // Find existing App User who previously connected this Square account
@@ -89,7 +87,7 @@ export const squareCallback = onRequest(async (req, res) => {
       // Generate custom token for the user
       const customToken = await generateCustomToken(appUser.id);
 
-      const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
+      const destPage = merchant.onboardingCompleted ? 'settings' : 'welcome';
 
       const redirectUrl = `${config.webUrl}/${destPage}?token=${customToken}`;
       res.redirect(redirectUrl);
@@ -104,16 +102,11 @@ export const squareCallback = onRequest(async (req, res) => {
       name: merchantInfo.name,
       provider: 'square',
       providerMerchantId: merchantInfo.id,
-      tokens: {
-        access: tokens.accessToken,
-        refresh: tokens.refreshToken,
-        expiresAt: tokens.expiresAt,
-        scopes: tokens.scopes,
-      },
+      accessToken: tokens.accessToken,
+      refreshToken: tokens.refreshToken,
+      tokenExpiresAt: tokens.expiresAt,
+      tokenScopes: tokens.scopes,
       locations: merchantInfo.locations,
-      appVersion: req.get('user-agent'),
-      ip: req.ip,
-      userAgent: req.get('user-agent'),
     });
 
     console.log({ merchant });
@@ -139,7 +132,7 @@ export const squareCallback = onRequest(async (req, res) => {
     // Generate custom token for web client to sign in
     const customToken = await generateCustomToken(appUser.id);
 
-    const destPage = merchant.metadata.onboardingCompleted ? 'settings' : 'welcome';
+    const destPage = merchant.onboardingCompleted ? 'settings' : 'welcome';
 
     const redirectUrl = `${config.webUrl}/${destPage}?token=${customToken}`;
 

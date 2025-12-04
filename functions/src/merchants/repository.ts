@@ -29,15 +29,15 @@ export async function upsertMerchant(input: MerchantInput): Promise<Merchant> {
 
     const updated: Merchant = {
       ...existing,
-      tokens: input.tokens,
+      accessToken: input.accessToken,
+      refreshToken: input.refreshToken,
+      tokenExpiresAt: input.tokenExpiresAt,
+      tokenScopes: input.tokenScopes,
       locations: input.locations,
-      metadata: {
-        ...existing.metadata,
-        lastRefreshedAt: now,
-        appVersion: input.appVersion,
-        revoked: false,
-        scopesMismatch: false,
-      },
+      lastRefreshedAt: now,
+      revoked: false,
+      scopesMismatch: false,
+      updatedAt: now,
     };
 
     await doc.ref.set(updated);
@@ -47,9 +47,6 @@ export async function upsertMerchant(input: MerchantInput): Promise<Merchant> {
       merchantId: doc.id,
       event: 'merchant_updated',
       timestamp: now,
-      appVersion: input.appVersion,
-      ip: input.ip,
-      userAgent: input.userAgent,
     });
 
     return { ...updated, id: doc.id };
@@ -59,15 +56,17 @@ export async function upsertMerchant(input: MerchantInput): Promise<Merchant> {
       name: input.name,
       provider: input.provider,
       providerMerchantId: input.providerMerchantId,
-      tokens: input.tokens,
+      accessToken: input.accessToken,
+      refreshToken: input.refreshToken,
+      tokenExpiresAt: input.tokenExpiresAt,
+      tokenScopes: input.tokenScopes,
       locations: input.locations,
-      metadata: {
-        connectedAt: now,
-        lastRefreshedAt: now,
-        appVersion: input.appVersion,
-        revoked: false,
-        onboardingCompleted: false,
-      },
+      connectedAt: now,
+      lastRefreshedAt: now,
+      revoked: false,
+      onboardingCompleted: false,
+      createdAt: now,
+      updatedAt: now,
     };
 
     const docRef = await collections.merchants.add(newMerchant);
@@ -77,9 +76,6 @@ export async function upsertMerchant(input: MerchantInput): Promise<Merchant> {
       merchantId: docRef.id,
       event: 'merchant_created',
       timestamp: now,
-      appVersion: input.appVersion,
-      ip: input.ip,
-      userAgent: input.userAgent,
     });
 
     return { ...newMerchant, id: docRef.id };
@@ -96,7 +92,7 @@ export async function updateMerchant(
   await collections.merchants.doc(id).update(
     {
       ...updates,
-      'metadata.lastRefreshedAt': Timestamp.now(),
+      updatedAt: Timestamp.now(),
     },
     { exists: true },
   );
@@ -154,8 +150,9 @@ export async function revokeMerchant(id: string): Promise<void> {
   }
 
   await doc.ref.update({
-    'metadata.revoked': true,
-    'metadata.lastRefreshedAt': Timestamp.now(),
+    revoked: true,
+    lastRefreshedAt: Timestamp.now(),
+    updatedAt: Timestamp.now(),
   });
 
   // Add audit log
