@@ -11,24 +11,57 @@ export type Database = {
     Tables: {
       merchants: {
         Row: {
+          access_token: string
+          connected_at: string
           created_at: string
-          email: string | null
           id: number
-          name: string | null
+          last_refreshed_at: string | null
+          locations: Json
+          name: string
+          onboarding_completed: boolean
+          provider: string
+          provider_merchant_id: string
+          refresh_token: string
+          revoked: boolean
+          scopes_mismatch: boolean
+          token_expires_at: string
+          token_scopes: string[]
           updated_at: string
         }
         Insert: {
+          access_token: string
+          connected_at?: string
           created_at?: string
-          email?: string | null
           id?: number
-          name?: string | null
+          last_refreshed_at?: string | null
+          locations?: Json
+          name: string
+          onboarding_completed?: boolean
+          provider: string
+          provider_merchant_id: string
+          refresh_token: string
+          revoked?: boolean
+          scopes_mismatch?: boolean
+          token_expires_at: string
+          token_scopes?: string[]
           updated_at?: string
         }
         Update: {
+          access_token?: string
+          connected_at?: string
           created_at?: string
-          email?: string | null
           id?: number
-          name?: string | null
+          last_refreshed_at?: string | null
+          locations?: Json
+          name?: string
+          onboarding_completed?: boolean
+          provider?: string
+          provider_merchant_id?: string
+          refresh_token?: string
+          revoked?: boolean
+          scopes_mismatch?: boolean
+          token_expires_at?: string
+          token_scopes?: string[]
           updated_at?: string
         }
         Relationships: []
