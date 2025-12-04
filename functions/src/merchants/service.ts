@@ -2,11 +2,7 @@
  * Merchant business logic
  */
 
-import {
-  createMerchant,
-  getMerchantByProviderId,
-  updateMerchant,
-} from '../datastore/postgres.js';
+import { createMerchant, getMerchantByProviderId, updateMerchant } from '../datastore/postgres.js';
 
 import { Merchant, MerchantInput } from './types.js';
 

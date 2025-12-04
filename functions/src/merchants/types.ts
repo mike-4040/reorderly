@@ -26,23 +26,23 @@ export interface Merchant {
   name: string;
   provider: Provider;
   providerMerchantId: string; // merchant_id from provider
-  
+
   // Token fields (flattened)
   accessToken: string;
   refreshToken: string;
   tokenExpiresAt: string; // ISO date string
   tokenScopes: string[];
-  
+
   // Locations (complex structure, kept as array)
   locations: Location[];
-  
+
   // Metadata fields (flattened)
   connectedAt: string; // ISO date string
   lastRefreshedAt?: string; // ISO date string
   revoked: boolean;
   scopesMismatch?: boolean;
   onboardingCompleted: boolean;
-  
+
   // Timestamps
   createdAt: string; // ISO date string
   updatedAt: string; // ISO date string
