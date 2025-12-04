@@ -2,8 +2,6 @@
  * Merchant data types and interfaces
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
-
 /**
  * Supported OAuth providers
  */
@@ -21,56 +19,33 @@ export interface Location {
 }
 
 /**
- * OAuth token data
+ * Complete merchant record (flattened structure)
  */
-export interface TokenData {
-  access: string;
-  refresh: string;
-  expiresAt: Timestamp;
-  scopes: string[];
-}
-
-/**
- * Audit entry for tracking changes
- */
-export interface AuditEntry {
-  timestamp: Timestamp;
-  event: string;
-  appVersion?: string;
-  ip?: string;
-  userAgent?: string;
-  metadata?: Record<string, unknown>;
-}
-
-/**
- * Merchant metadata
- */
-export interface MerchantMetadata {
-  connectedAt: Timestamp;
-  lastRefreshedAt?: Timestamp;
-  appVersion?: string;
-  revoked: boolean;
-  scopesMismatch?: boolean;
-  onboardingCompleted: boolean;
-}
-
-/**
- * Base merchant data shared between all merchant types
- */
-export interface MerchantBase {
+export interface Merchant {
+  id: string; // Our internal ID (database ID as string)
   name: string;
   provider: Provider;
   providerMerchantId: string; // merchant_id from provider
-  tokens: TokenData;
-  locations: Location[];
-}
 
-/**
- * Complete merchant record
- */
-export interface Merchant extends MerchantBase {
-  id: string; // Our internal ID (Firestore doc ID)
-  metadata: MerchantMetadata;
+  // Token fields (flattened)
+  accessToken: string;
+  refreshToken: string;
+  tokenExpiresAt: string; // ISO date string
+  tokenScopes: string[];
+
+  // Locations (complex structure, kept as array)
+  locations: Location[];
+
+  // Metadata fields (flattened)
+  connectedAt: string; // ISO date string
+  lastRefreshedAt?: string; // ISO date string
+  revoked: boolean;
+  scopesMismatch?: boolean;
+  onboardingCompleted: boolean;
+
+  // Timestamps
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 
 /**
@@ -85,8 +60,13 @@ export interface MerchantInfo {
 /**
  * Data required to create/update a merchant
  */
-export interface MerchantInput extends MerchantBase {
-  appVersion?: string;
-  ip?: string;
-  userAgent?: string;
+export interface MerchantInput {
+  name: string;
+  provider: Provider;
+  providerMerchantId: string;
+  accessToken: string;
+  refreshToken: string;
+  tokenExpiresAt: string; // ISO date string
+  tokenScopes: string[];
+  locations: Location[];
 }

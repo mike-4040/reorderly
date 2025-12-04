@@ -5,10 +5,14 @@
 
 import process from 'node:process';
 
-import { Pool } from 'pg';
+import { Pool, types } from 'pg';
 
 import { config } from '../utils/config.js';
 import { captureException } from '../utils/sentry.js';
+
+// Configure pg to return timestamps as ISO strings instead of Date objects
+types.setTypeParser(types.builtins.TIMESTAMPTZ, (val) => val);
+types.setTypeParser(types.builtins.TIMESTAMP, (val) => val);
 
 let pool: Pool | null = null;
 

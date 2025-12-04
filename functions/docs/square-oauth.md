@@ -102,20 +102,26 @@ Once ngrok is set up:
 
 ```typescript
 {
+  id: 'doc-id',
+  name: 'Merchant Name',
   provider: 'square',
-  providerId: 'MERCHANT_ID',
-  tokens: {
-    access: '...',
-    refresh: '...',
-    expiresAt: Timestamp,
-    scopes: []
-  },
+  providerMerchantId: 'MERCHANT_ID',
+  // Token fields (flattened)
+  accessToken: '...',
+  refreshToken: '...',
+  tokenExpiresAt: Timestamp,
+  tokenScopes: [],
+  // Locations
   locations: [...],
-  metadata: {
-    connectedAt: Timestamp,
-    lastRefreshedAt: Timestamp,
-    revoked: false
-  }
+  // Metadata fields (flattened)
+  connectedAt: Timestamp,
+  lastRefreshedAt: Timestamp,
+  revoked: false,
+  scopesMismatch: false,
+  onboardingCompleted: false,
+  // Timestamps
+  createdAt: Timestamp,
+  updatedAt: Timestamp
 }
 ```
 
@@ -136,10 +142,7 @@ Once ngrok is set up:
 {
   merchantId: 'doc-id',
   event: 'merchant_created' | 'merchant_updated' | 'merchant_revoked',
-  timestamp: Timestamp,
-  appVersion: '...',
-  ip: '...',
-  userAgent: '...'
+  timestamp: Timestamp
 }
 ```
 
