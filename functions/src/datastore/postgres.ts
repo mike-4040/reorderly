@@ -114,6 +114,9 @@ export async function updateMerchant(
   const values: unknown[] = [];
 
   // Build dynamic SET clause based on provided updates
+  if (updates.name !== undefined) {
+    setClauses.push(`name = $${values.push(updates.name)}`);
+  }
   if (updates.accessToken !== undefined) {
     setClauses.push(`access_token = $${values.push(updates.accessToken)}`);
   }
