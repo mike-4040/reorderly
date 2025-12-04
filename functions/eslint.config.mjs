@@ -8,6 +8,7 @@ import eslintConfigPrettier from 'eslint-config-prettier';
 
 export default defineConfig(
   {
+    name: 'Global Ignored Files',
     ignores: [
       'lib/**/*',
       'eslint.config.mjs',
@@ -15,23 +16,29 @@ export default defineConfig(
       'src/datastore/types/generated.ts',
     ],
   },
-  eslint.configs.recommended,
-  tseslint.configs.strictTypeChecked,
-  tseslint.configs.stylisticTypeChecked,
+  { name: 'Eslint Recommended', ...eslint.configs.recommended },
+  tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.strictTypeChecked[2],
+  tseslint.configs.stylisticTypeChecked[2],
   {
+    name: 'TypeScript ESLint Plugin Configuration',
     languageOptions: {
       parserOptions: {
         project: './tsconfig.dev.json',
         tsconfigRootDir: import.meta.dirname,
       },
     },
+    rules: {
+      '@typescript-eslint/restrict-template-expressions': ['error', { allowNumber: true }],
+      '@typescript-eslint/unified-signatures': 'off', // Disabled due to ESLint bug with generics
+    },
   },
   {
+    name: 'Import Plugin Configuration',
     plugins: {
       import: importPlugin,
     },
     rules: {
-      '@typescript-eslint/unified-signatures': 'off', // Disabled due to ESLint bug with generics
       'import/order': [
         'error',
         {
@@ -52,5 +59,5 @@ export default defineConfig(
       ],
     },
   },
-  eslintConfigPrettier,
+  { name: 'Prettier Configuration', ...eslintConfigPrettier },
 );

@@ -115,31 +115,31 @@ export async function updateMerchant(
 
   // Build dynamic SET clause based on provided updates
   if (updates.accessToken !== undefined) {
-    setClauses.push(`access_token = $${String(values.push(updates.accessToken))}`);
+    setClauses.push(`access_token = $${values.push(updates.accessToken)}`);
   }
   if (updates.refreshToken !== undefined) {
-    setClauses.push(`refresh_token = $${String(values.push(updates.refreshToken))}`);
+    setClauses.push(`refresh_token = $${values.push(updates.refreshToken)}`);
   }
   if (updates.tokenExpiresAt !== undefined) {
-    setClauses.push(`token_expires_at = $${String(values.push(updates.tokenExpiresAt))}`);
+    setClauses.push(`token_expires_at = $${values.push(updates.tokenExpiresAt)}`);
   }
   if (updates.tokenScopes !== undefined) {
-    setClauses.push(`token_scopes = $${String(values.push(updates.tokenScopes))}`);
+    setClauses.push(`token_scopes = $${values.push(updates.tokenScopes)}`);
   }
   if (updates.locations !== undefined) {
-    setClauses.push(`locations = $${String(values.push(JSON.stringify(updates.locations)))}`);
+    setClauses.push(`locations = $${values.push(JSON.stringify(updates.locations))}`);
   }
   if (updates.lastRefreshedAt !== undefined) {
-    setClauses.push(`last_refreshed_at = $${String(values.push(updates.lastRefreshedAt))}`);
+    setClauses.push(`last_refreshed_at = $${values.push(updates.lastRefreshedAt)}`);
   }
   if (updates.revoked !== undefined) {
-    setClauses.push(`revoked = $${String(values.push(updates.revoked))}`);
+    setClauses.push(`revoked = $${values.push(updates.revoked)}`);
   }
   if (updates.scopesMismatch !== undefined) {
-    setClauses.push(`scopes_mismatch = $${String(values.push(updates.scopesMismatch))}`);
+    setClauses.push(`scopes_mismatch = $${values.push(updates.scopesMismatch)}`);
   }
   if (updates.onboardingCompleted !== undefined) {
-    setClauses.push(`onboarding_completed = $${String(values.push(updates.onboardingCompleted))}`);
+    setClauses.push(`onboarding_completed = $${values.push(updates.onboardingCompleted)}`);
   }
 
   if (setClauses.length === 0) {
@@ -150,7 +150,7 @@ export async function updateMerchant(
   await getPgPool().query(
     `UPDATE merchants
     SET ${setClauses.join(', ')} 
-    WHERE id = $${String(values.push(id))}`,
+    WHERE id = $${values.push(id)}`,
     values,
   );
 }
