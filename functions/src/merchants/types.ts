@@ -2,8 +2,6 @@
  * Merchant data types and interfaces
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
-
 /**
  * Supported OAuth providers
  */
@@ -24,7 +22,7 @@ export interface Location {
  * Complete merchant record (flattened structure)
  */
 export interface Merchant {
-  id: string; // Our internal ID (Firestore doc ID)
+  id: string; // Our internal ID (database ID as string)
   name: string;
   provider: Provider;
   providerMerchantId: string; // merchant_id from provider
@@ -32,22 +30,22 @@ export interface Merchant {
   // Token fields (flattened)
   accessToken: string;
   refreshToken: string;
-  tokenExpiresAt: Timestamp;
+  tokenExpiresAt: string; // ISO date string
   tokenScopes: string[];
   
   // Locations (complex structure, kept as array)
   locations: Location[];
   
   // Metadata fields (flattened)
-  connectedAt: Timestamp;
-  lastRefreshedAt?: Timestamp;
+  connectedAt: string; // ISO date string
+  lastRefreshedAt?: string; // ISO date string
   revoked: boolean;
   scopesMismatch?: boolean;
   onboardingCompleted: boolean;
   
   // Timestamps
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  createdAt: string; // ISO date string
+  updatedAt: string; // ISO date string
 }
 
 /**
@@ -68,7 +66,7 @@ export interface MerchantInput {
   providerMerchantId: string;
   accessToken: string;
   refreshToken: string;
-  tokenExpiresAt: Timestamp;
+  tokenExpiresAt: string; // ISO date string
   tokenScopes: string[];
   locations: Location[];
 }

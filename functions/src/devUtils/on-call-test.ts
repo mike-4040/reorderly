@@ -6,7 +6,7 @@
 import { onCall } from 'firebase-functions/https';
 import { z } from 'zod';
 
-import { getMerchantById } from '../datastore/postgres.js';
+import { getMerchant } from '../datastore/postgres.js';
 
 const requestSchema = z.object({
   merchantId: z.string(),
@@ -24,7 +24,7 @@ export const onCallTest = onCall(async (request) => {
   }
 
   const { merchantId } = payload.data;
-  const merchant = await getMerchantById(merchantId);
+  const merchant = await getMerchant(merchantId);
 
   return {
     merchant,

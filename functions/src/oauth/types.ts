@@ -11,7 +11,7 @@ export interface TokenResponse {
   merchantId: string;
   accessToken: string;
   refreshToken: string;
-  expiresAt: Timestamp;
+  expiresAt: string; // ISO date string
   scopes: string[];
 }
 
@@ -31,7 +31,7 @@ export function isOAuthFlow(value: unknown): value is OAuthFlow {
 }
 
 /**
- * OAuth state stored for CSRF protection
+ * OAuth state stored for CSRF protection (still in Firestore)
  */
 export interface OAuthState {
   stateId: string;

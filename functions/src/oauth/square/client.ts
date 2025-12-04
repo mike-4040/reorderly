@@ -2,7 +2,6 @@
  * Square OAuth client implementation
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
 import { SquareClient, SquareEnvironment } from 'square';
 
 import { config } from '../../utils/config';
@@ -78,7 +77,7 @@ export async function exchangeCodeForTokens(code: string): Promise<TokenResponse
       ? new Date(response.expiresAt).getTime() - Date.now()
       : 30 * 24 * 60 * 60 * 1000; // Default to 30 days
 
-    const expiresAt = Timestamp.fromMillis(Date.now() + expiresInMs);
+    const expiresAt = new Date(Date.now() + expiresInMs).toISOString();
 
     return {
       accessToken: response.accessToken,
@@ -114,7 +113,7 @@ export async function refreshAccessToken(refreshToken: string): Promise<TokenRes
       ? new Date(response.expiresAt).getTime() - Date.now()
       : 30 * 24 * 60 * 60 * 1000;
 
-    const expiresAt = Timestamp.fromMillis(Date.now() + expiresInMs);
+    const expiresAt = new Date(Date.now() + expiresInMs).toISOString();
 
     return {
       merchantId: response.merchantId ?? '',
