@@ -2,7 +2,16 @@
  * Login page with email/password authentication
  */
 
-import { Alert, Button, Container, Divider, PasswordInput, Stack, TextInput, Title } from '@mantine/core';
+import {
+  Alert,
+  Button,
+  Container,
+  Divider,
+  PasswordInput,
+  Stack,
+  TextInput,
+  Title,
+} from '@mantine/core';
 import { Link, createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useState, FormEvent, useEffect } from 'react';
 

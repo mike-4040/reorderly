@@ -9,7 +9,7 @@
 export function getRequiredEnv(key: string): string {
   const value = import.meta.env[key] as string | undefined;
   if (!value) {
-    throw new Error("getRequiredEnv_missingEnvVariable", {
+    throw new Error('getRequiredEnv_missingEnvVariable', {
       cause: { key },
     });
   }
@@ -20,5 +20,5 @@ export function getRequiredEnv(key: string): string {
  * Get the base URL for Firebase Functions
  */
 export function getFunctionsUrl(): string {
-  return getRequiredEnv("VITE_FUNCTIONS_URL");
+  return getRequiredEnv('VITE_FUNCTIONS_URL');
 }

@@ -33,7 +33,9 @@ export function EmailForm() {
 
       switch (errCode) {
         case 'auth/requires-recent-login':
-          setError('For security, please sign in again before updating your email');
+          setError(
+            'For security, please sign in again before updating your email',
+          );
           break;
         case 'auth/email-already-in-use':
           setError('This email is already in use by another account');
@@ -42,7 +44,9 @@ export function EmailForm() {
           setError('Please enter a valid email address');
           break;
         default:
-          captureException(new Error('EmailForm_setEmailError', { cause: err }));
+          captureException(
+            new Error('EmailForm_setEmailError', { cause: err }),
+          );
           setError(err instanceof Error ? err.message : 'Failed to set email');
       }
     } finally {

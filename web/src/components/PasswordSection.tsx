@@ -18,7 +18,8 @@ export function PasswordSection({ user }: PasswordSectionProps) {
           Password
         </Title>
         <Text c="dimmed" size="sm" mb="md">
-          Password authentication is enabled. You can sign in with your email and password.
+          Password authentication is enabled. You can sign in with your email
+          and password.
         </Text>
         <Button onClick={() => setChangePasswordModalOpen(true)}>
           Change Password

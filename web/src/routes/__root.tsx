@@ -1,4 +1,14 @@
-import { AppShell, Button, Center, Group, Loader, Stack, Tabs, Text, Title } from '@mantine/core';
+import {
+  AppShell,
+  Button,
+  Center,
+  Group,
+  Loader,
+  Stack,
+  Tabs,
+  Text,
+  Title,
+} from '@mantine/core';
 import { createRootRouteWithContext, Outlet } from '@tanstack/react-router';
 import { useNavigate, useRouterState } from '@tanstack/react-router';
 import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';

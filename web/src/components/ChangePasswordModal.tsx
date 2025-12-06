@@ -10,7 +10,11 @@ interface ChangePasswordModalProps {
   onClose: () => void;
 }
 
-export function ChangePasswordModal({ user, opened, onClose }: ChangePasswordModalProps) {
+export function ChangePasswordModal({
+  user,
+  opened,
+  onClose,
+}: ChangePasswordModalProps) {
   const [newPassword, setNewPassword] = useState('');
   const [confirmNewPassword, setConfirmNewPassword] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -49,7 +53,9 @@ export function ChangePasswordModal({ user, opened, onClose }: ChangePasswordMod
       const errCode = digProperty(err, 'code');
       switch (errCode) {
         case 'auth/requires-recent-login':
-          setError('For security, please sign in again before changing your password');
+          setError(
+            'For security, please sign in again before changing your password',
+          );
           break;
         case 'auth/weak-password':
           setError('Password is too weak. Please use a stronger password');

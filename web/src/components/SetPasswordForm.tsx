@@ -1,4 +1,11 @@
-import { Button, Paper, PasswordInput, Stack, Text, Title } from '@mantine/core';
+import {
+  Button,
+  Paper,
+  PasswordInput,
+  Stack,
+  Text,
+  Title,
+} from '@mantine/core';
 import { updatePassword, User } from 'firebase/auth';
 import { useState } from 'react';
 
@@ -44,7 +51,9 @@ export function SetPasswordForm({ user }: SetPasswordFormProps) {
       const errCode = digProperty(err, 'code');
       switch (errCode) {
         case 'auth/requires-recent-login':
-          setError('For security, please sign in again before setting a password');
+          setError(
+            'For security, please sign in again before setting a password',
+          );
           break;
         case 'auth/weak-password':
           setError('Password is too weak. Please use a stronger password');
@@ -63,7 +72,8 @@ export function SetPasswordForm({ user }: SetPasswordFormProps) {
         Set Password
       </Title>
       <Text size="sm" c="dimmed" mb="md">
-        Set a password to enable email/password login in addition to Square OAuth.
+        Set a password to enable email/password login in addition to Square
+        OAuth.
       </Text>
 
       <form onSubmit={(e) => void handleSubmit(e)}>
@@ -85,7 +95,11 @@ export function SetPasswordForm({ user }: SetPasswordFormProps) {
             disabled={isSettingPassword}
             error={error}
           />
-          <Button type="submit" loading={isSettingPassword} style={{ alignSelf: 'flex-start' }}>
+          <Button
+            type="submit"
+            loading={isSettingPassword}
+            style={{ alignSelf: 'flex-start' }}
+          >
             Set Password
           </Button>
           {success && (

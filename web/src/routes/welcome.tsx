@@ -53,8 +53,8 @@ function Welcome() {
       <Container size="xs" mt="xl">
         <Title order={1}>Welcome to Reorderly</Title>
         <Text mt="md" mb="xl">
-          To get started, please add your email address. We'll use it to send you important updates
-          and enable account recovery.
+          To get started, please add your email address. We'll use it to send
+          you important updates and enable account recovery.
         </Text>
 
         <EmailForm />
