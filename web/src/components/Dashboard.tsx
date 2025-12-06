@@ -9,18 +9,41 @@ export function Dashboard() {
   return (
     <Container>
       {user && !user.email && (
-        <Alert variant="light" color="yellow" title="Account setup incomplete" mb="xl">
+        <Alert
+          variant="light"
+          color="yellow"
+          title="Account setup incomplete"
+          mb="xl"
+        >
           Please add your email address to complete your account setup.{' '}
-          <Button component={Link} to="/settings" variant="subtle" size="compact-sm" color="yellow">
+          <Button
+            component={Link}
+            to="/settings"
+            variant="subtle"
+            size="compact-sm"
+            color="yellow"
+          >
             Go to Settings
           </Button>
         </Alert>
       )}
 
       {user && user.email && !user.emailVerified && (
-        <Alert variant="light" color="blue" title="Email verification pending" mb="xl">
-          Please verify your email address. Check your inbox for the verification link.{' '}
-          <Button component={Link} to="/settings" variant="subtle" size="compact-sm" color="blue">
+        <Alert
+          variant="light"
+          color="blue"
+          title="Email verification pending"
+          mb="xl"
+        >
+          Please verify your email address. Check your inbox for the
+          verification link.{' '}
+          <Button
+            component={Link}
+            to="/settings"
+            variant="subtle"
+            size="compact-sm"
+            color="blue"
+          >
             Resend verification
           </Button>
         </Alert>

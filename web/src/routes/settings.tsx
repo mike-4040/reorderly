@@ -46,7 +46,9 @@ function Settings() {
   const squareInstallUrl = `${functionsUrl}/squareAuthorize?flow=install`;
 
   // Check if user has password authentication enabled
-  const hasPassword = user?.providerData.some((provider) => provider.providerId === 'password');
+  const hasPassword = user?.providerData.some(
+    (provider) => provider.providerId === 'password',
+  );
 
   return (
     <Container>
@@ -68,7 +70,11 @@ function Settings() {
         <Stack mt="xl" gap="xl">
           <EmailSection user={user} />
 
-          {hasPassword ? <PasswordSection user={user} /> : <SetPasswordForm user={user} />}
+          {hasPassword ? (
+            <PasswordSection user={user} />
+          ) : (
+            <SetPasswordForm user={user} />
+          )}
 
           {/* Account Section */}
           <Paper withBorder p="md">

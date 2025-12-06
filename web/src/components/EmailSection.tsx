@@ -30,7 +30,9 @@ export function EmailSection({ user }: EmailSectionProps) {
           setResendError('Too many requests. Please try again later.');
           break;
         default:
-          setResendError('Failed to send verification email. Please try again.');
+          setResendError(
+            'Failed to send verification email. Please try again.',
+          );
       }
     }
   };

@@ -35,7 +35,8 @@ function Signup() {
 
       <Stack gap="md">
         <Text>
-          Connect your Square account to start managing your suppliers and orders.
+          Connect your Square account to start managing your suppliers and
+          orders.
         </Text>
 
         <Button component="a" href={squareInstallUrl} size="lg">

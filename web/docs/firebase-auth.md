@@ -47,6 +47,7 @@ export const Route = createFileRoute('/protected')({
 The `requireAuth` guard receives auth state through TanStack Router's context (passed from `App.tsx`), making the dependency explicit and preventing timing issues.
 
 Currently protected routes:
+
 - `/welcome` - Post-OAuth onboarding
 - `/settings` - User settings
 - `/suppliers` - Supplier management
