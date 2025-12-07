@@ -37,7 +37,7 @@ export const scheduledTokenRefresh = onSchedule(
         );
 
         const succeeded = results.filter((r) => r.status === 'fulfilled' && r.value).length;
-        const failed = results.filter((r) => r.status === 'rejected' || !r.value).length;
+        const failed = results.length - succeeded;
 
         console.log(
           `Batch ${Math.floor(i / BATCH_SIZE) + 1}: ${succeeded} succeeded, ${failed} failed`,

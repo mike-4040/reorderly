@@ -5,7 +5,7 @@ Automated system to keep Square merchant OAuth tokens fresh.
 ## How It Works
 
 1. **Scheduled Job** - Runs daily at midnight (LA time)
-   - Queries merchants where `last_refreshed_at > 24 hours` OR `NULL`
+   - Queries merchants not refreshed in the last 24 hours
    - Processes in batches of 50 with error isolation
 
 2. **Refresh Attempt** - Per merchant
