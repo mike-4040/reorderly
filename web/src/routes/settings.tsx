@@ -1,7 +1,8 @@
-import { Title, Text, Container, Button, Stack, Paper } from '@mantine/core';
+import { Title, Text, Container, Button, Stack } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
+import { AccountSection } from '../components/AccountSection';
 import { EmailSection } from '../components/EmailSection';
 import { PasswordSection } from '../components/PasswordSection';
 import { SetPasswordForm } from '../components/SetPasswordForm';
@@ -25,7 +26,7 @@ export const Route = createFileRoute('/settings')({
 
 function Settings() {
   const { token } = Route.useSearch();
-  const { user, signInWithCustomToken, signOut } = useAuth();
+  const { user, signInWithCustomToken } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -76,16 +77,7 @@ function Settings() {
             <SetPasswordForm user={user} />
           )}
 
-          {/* Account Section */}
-          <Paper withBorder p="md">
-            <Title order={3} mb="md">
-              Account
-            </Title>
-            <Stack gap="md" align="flex-start">
-              <Text>User ID: {user.uid}</Text>
-              <Button onClick={() => void signOut()}>Logout</Button>
-            </Stack>
-          </Paper>
+          <AccountSection user={user} />
         </Stack>
       )}
     </Container>
