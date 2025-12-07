@@ -27,7 +27,7 @@ fi
 
 # Start Firebase emulators with environment variables in .env
 firebase emulators:start \
-  --only functions,firestore,auth \
+  --only functions,firestore,auth,pubsub \
   --import=./emulators-data \
   --export-on-exit&
 

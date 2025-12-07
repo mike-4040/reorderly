@@ -6,7 +6,7 @@
 import { onCall } from 'firebase-functions/https';
 import { z } from 'zod';
 
-import { getMerchant } from '../datastore/postgres.js';
+import { getMerchant } from '../datastore/merchants.js';
 
 const requestSchema = z.object({
   merchantId: z.string(),

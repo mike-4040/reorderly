@@ -39,6 +39,7 @@ export interface Merchant {
   // Metadata fields (flattened)
   connectedAt: string; // ISO date string
   lastRefreshedAt?: string; // ISO date string
+  refreshFailureCount: number;
   revoked: boolean;
   scopesMismatch?: boolean;
   onboardingCompleted: boolean;

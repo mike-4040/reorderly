@@ -169,12 +169,15 @@ Error codes:
 ✅ OAuth errors logged but not exposed to users  
 ✅ Sensitive config values loaded from environment
 
+### Token Refresh
+
+Access tokens expire in 30 days. The system automatically refreshes tokens daily via a scheduled Cloud Function.
+
+**See:** [square-merchants-token-refresh.md](./square-merchants-token-refresh.md) for details on the automated refresh system.
+
 ### Next Steps
 
-1. **Test the flow** with Square sandbox credentials
-2. **Implement token refresh** logic (tokens expire in 30 days)
-3. **Add webhook handling** for revocation events
-4. **Deploy to staging** with `npm run deploy-stg`
+- **Add webhook handling** for revocation events
 
 ### Deployment
 

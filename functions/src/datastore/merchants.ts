@@ -4,42 +4,12 @@
  */
 
 import { getPgPool } from '../clients/postgres.js';
-import { Location, Merchant, MerchantInput, Provider } from '../merchants/types.js';
+import { Merchant, MerchantInput } from '../merchants/types.js';
 
+import { rowToMerchant } from './mappers.js';
 import { Database } from './types/generated.js';
 
-/**
- * Merchant entity from database
- */
 type MerchantRow = Database['public']['Tables']['merchants']['Row'];
-
-/**
- * Convert database row to domain Merchant type
- */
-function rowToMerchant(row: MerchantRow | null | undefined): Merchant | null {
-  if (!row) {
-    return null;
-  }
-
-  return {
-    id: row.id.toString(),
-    name: row.name,
-    provider: row.provider as Provider,
-    providerMerchantId: row.provider_merchant_id,
-    accessToken: row.access_token,
-    refreshToken: row.refresh_token,
-    tokenExpiresAt: row.token_expires_at,
-    tokenScopes: row.token_scopes,
-    locations: row.locations as unknown as Location[],
-    connectedAt: row.connected_at,
-    lastRefreshedAt: row.last_refreshed_at ?? undefined,
-    revoked: row.revoked,
-    scopesMismatch: row.scopes_mismatch,
-    onboardingCompleted: row.onboarding_completed,
-    createdAt: row.created_at,
-    updatedAt: row.updated_at,
-  };
-}
 
 /**
  * Get merchant by ID
@@ -144,6 +114,9 @@ export async function updateMerchant(
   if (updates.onboardingCompleted !== undefined) {
     setClauses.push(`onboarding_completed = $${values.push(updates.onboardingCompleted)}`);
   }
+  if (updates.refreshFailureCount !== undefined) {
+    setClauses.push(`refresh_failure_count = $${values.push(updates.refreshFailureCount)}`);
+  }
 
   if (setClauses.length === 0) {
     // Nothing to update
@@ -173,4 +146,19 @@ export async function revokeMerchant(id: string): Promise<void> {
   if (rowCount === 0) {
     throw new Error('revokeMerchant_notFound', { cause: { id } });
   }
+}
+
+/**
+ * Get merchants that need token refresh
+ * Criteria: not revoked AND last_refreshed_at is older than 24 hours (or NULL)
+ */
+export async function getMerchantsNeedingRefresh(): Promise<Merchant[]> {
+  const { rows } = await getPgPool().query<MerchantRow>(
+    `SELECT * FROM merchants 
+     WHERE revoked = false 
+       AND (last_refreshed_at IS NULL OR last_refreshed_at < NOW() - INTERVAL '24 hours')
+     ORDER BY last_refreshed_at NULLS FIRST`,
+  );
+
+  return rows.map((row) => rowToMerchant(row)).filter((m): m is Merchant => m !== null);
 }
