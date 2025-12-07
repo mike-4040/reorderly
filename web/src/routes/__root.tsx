@@ -15,7 +15,6 @@ import { TanStackRouterDevtools } from '@tanstack/react-router-devtools';
 import { User } from 'firebase/auth';
 import { useEffect } from 'react';
 
-import { UserAccountMenu } from '../components/UserAccountMenu';
 import { useAuth } from '../contexts/useAuth';
 import { captureException } from '../utils/sentry';
 
@@ -82,11 +81,8 @@ function RootLayout() {
               )}
             </Tabs.List>
           </Tabs>
-
-          <UserAccountMenu />
         </Group>
       </AppShell.Header>
-
       <AppShell.Main>
         <Outlet />
       </AppShell.Main>
