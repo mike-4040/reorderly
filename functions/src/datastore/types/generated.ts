@@ -21,6 +21,7 @@ export type Database = {
           onboarding_completed: boolean
           provider: string
           provider_merchant_id: string
+          refresh_failure_count: number
           refresh_token: string
           revoked: boolean
           scopes_mismatch: boolean
@@ -39,6 +40,7 @@ export type Database = {
           onboarding_completed?: boolean
           provider: string
           provider_merchant_id: string
+          refresh_failure_count?: number
           refresh_token: string
           revoked?: boolean
           scopes_mismatch?: boolean
@@ -57,6 +59,7 @@ export type Database = {
           onboarding_completed?: boolean
           provider?: string
           provider_merchant_id?: string
+          refresh_failure_count?: number
           refresh_token?: string
           revoked?: boolean
           scopes_mismatch?: boolean

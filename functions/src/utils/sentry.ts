@@ -32,6 +32,15 @@ export function initSentry(): void {
     environment,
     // Disable tracing
     tracesSampleRate: 0,
+    // Log all errors/messages to console before sending to Sentry
+    beforeSend(event, hint) {
+      console.error('[Sentry]', {
+        message: event.message,
+        exception: hint.originalException,
+      });
+
+      return event;
+    },
   });
 
   initialized = true;
