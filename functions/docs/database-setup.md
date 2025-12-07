@@ -134,6 +134,14 @@ npm run db-types
 
 This generates `src/datastore/types/generated.ts` with types for all tables.
 
+**Dump schema:**
+
+```bash
+npm run db-schema
+```
+
+This creates `migrations/schema.sql` with the complete database schema for reference. Regenerate after migrations to keep it current.
+
 **When to regenerate:**
 
 - After running migrations that modify schema

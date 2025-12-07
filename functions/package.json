@@ -16,7 +16,8 @@
     "migrate-down": "doppler run -p backend -c dev -- npx node-pg-migrate -d POSTGRES_URL down",
     "migrate-stg": "doppler run -p backend -c stg -- npx node-pg-migrate -d POSTGRES_URL up",
     "migrate-prd": "doppler run -p backend -c prd -- npx node-pg-migrate -d POSTGRES_URL up",
-    "db-types": "doppler run -p backend -c dev -- sh -c 'npx supabase gen types --lang=typescript --db-url \"$POSTGRES_URL\" --schema public > src/datastore/types/generated.ts'"
+    "db-types": "doppler run -p backend -c dev -- sh -c 'npx supabase gen types --lang=typescript --db-url \"$POSTGRES_URL\" --schema public > src/datastore/types/generated.ts'",
+    "db-schema": "./scripts/dump-schema.sh"
   },
   "engines": {
     "node": "22"
