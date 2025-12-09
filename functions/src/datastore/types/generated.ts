@@ -9,6 +9,71 @@ export type Json =
 export type Database = {
   public: {
     Tables: {
+      items: {
+        Row: {
+          category_id: string | null
+          category_name: string | null
+          created_at: string
+          description: string | null
+          id: number
+          is_available: boolean
+          is_deleted: boolean
+          last_seen_at: string | null
+          merchant_id: number
+          name: string
+          provider: string
+          provider_item_id: string
+          provider_updated_at: string | null
+          provider_version: number | null
+          raw: Json | null
+          updated_at: string
+        }
+        Insert: {
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          is_available?: boolean
+          is_deleted?: boolean
+          last_seen_at?: string | null
+          merchant_id: number
+          name: string
+          provider?: string
+          provider_item_id: string
+          provider_updated_at?: string | null
+          provider_version?: number | null
+          raw?: Json | null
+          updated_at?: string
+        }
+        Update: {
+          category_id?: string | null
+          category_name?: string | null
+          created_at?: string
+          description?: string | null
+          id?: number
+          is_available?: boolean
+          is_deleted?: boolean
+          last_seen_at?: string | null
+          merchant_id?: number
+          name?: string
+          provider?: string
+          provider_item_id?: string
+          provider_updated_at?: string | null
+          provider_version?: number | null
+          raw?: Json | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "items_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       merchants: {
         Row: {
           access_token: string

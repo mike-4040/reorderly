@@ -24,3 +24,19 @@ export function digProperty(obj: unknown, ...props: string[]): unknown {
 
   return current;
 }
+
+/**
+ * Serialize object to JSON-safe format by converting BigInt to strings
+ * Required when storing API responses with BigInt values in JSONB columns
+ *
+ * @example
+ * serializeBigIntValues({ id: 123n, version: 456n }) // { id: "123", version: "456" }
+ */
+export function serializeBigIntValues(obj: unknown): unknown {
+  return JSON.parse(
+    JSON.stringify(obj, (_key, value) =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      typeof value === 'bigint' ? value.toString() : value,
+    ),
+  );
+}

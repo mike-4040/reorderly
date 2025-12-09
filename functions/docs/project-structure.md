@@ -7,13 +7,26 @@ functions/src/
 │   ├── config.ts         # Environment configuration (lazy-loaded)
 │   ├── error-handler.ts  # Error handling and custom error classes
 │   └── firestore.ts      # Firestore initialization and collection refs
+├── datastore/            # Database layer
+│   ├── merchants.ts      # Merchant database queries
+│   ├── items.ts          # Item database queries
+│   ├── mappers.ts        # Row-to-domain model converters
+│   └── types/            # Generated database types
 ├── oauth/                # OAuth providers
 │   ├── shared/           # Shared OAuth utilities (state, tokens, audit)
 │   └── square/           # Square-specific implementation
-├── merchants/            # Merchant data management
+├── merchants/            # Merchant domain logic
 │   ├── types.ts          # Merchant data models
-│   ├── repository.ts     # Firestore CRUD operations
-│   └── service.ts        # Business logic
+│   ├── service.ts        # Business logic
+│   ├── token-refresh.ts  # Token refresh service
+│   └── scheduled-refresh.ts  # Scheduled token refresh function
+├── items/                # Catalog items domain logic
+│   ├── types.ts          # Item data models
+│   ├── sync.ts           # Item sync service
+│   └── scheduled-sync.ts # Scheduled item sync function
+├── providers/            # External provider integrations
+│   └── square/           # Square API client
+│       └── client.ts     # Merchant & catalog API calls
 └── docs/                 # Documentation
 ```
 
