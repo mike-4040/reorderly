@@ -1,3 +1,21 @@
+CREATE TABLE public.items (
+    id bigint NOT NULL,
+    merchant_id bigint NOT NULL,
+    provider text DEFAULT 'square'::text NOT NULL,
+    provider_item_id text NOT NULL,
+    name text NOT NULL,
+    description text,
+    category_id text,
+    category_name text,
+    is_deleted boolean DEFAULT false NOT NULL,
+    is_available boolean DEFAULT true NOT NULL,
+    provider_version bigint,
+    provider_updated_at timestamp with time zone,
+    last_seen_at timestamp with time zone,
+    raw jsonb,
+    created_at timestamp with time zone DEFAULT now() NOT NULL,
+    updated_at timestamp with time zone DEFAULT now() NOT NULL
+);
 CREATE TABLE public.merchants (
     id bigint NOT NULL,
     name text NOT NULL,

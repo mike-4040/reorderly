@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 #
-# Dump database schema (tables only) to migrations/schema.sql
+# Dump database schema (tables only) to schema.sql
 #
 # This script dumps only table definitions
 #
@@ -10,7 +10,7 @@ set -e
 CONTAINER_NAME="reorderly-postgres"
 DB_USER="postgres"
 DB_NAME="reorderly"
-OUTPUT_FILE="migrations/schema.sql"
+OUTPUT_FILE="schema.sql"
 
 # Check if container is running
 if ! docker ps | grep -q "$CONTAINER_NAME"; then
@@ -39,6 +39,7 @@ docker exec "$CONTAINER_NAME" pg_dump \
     -e '/^CREATE SEQUENCE/,/^$/d' \
     -e '/^CREATE SCHEMA/d' \
     -e '/^CREATE TRIGGER/,/^$/d' \
+    -e '/^CREATE UNIQUE INDEX/,/^$/d' \
     -e '/^SELECT /d' \
     -e '/^SET /d' \
     -e '/^--/d' \

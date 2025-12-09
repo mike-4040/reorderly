@@ -2,7 +2,7 @@
  * Square API client for merchant operations
  */
 
-import { SquareClient, SquareEnvironment } from 'square';
+import { CatalogObject, SquareClient, SquareEnvironment } from 'square';
 
 import { Location, MerchantInfo } from '../../merchants/types';
 import { config } from '../../utils/config';
@@ -61,5 +61,40 @@ export async function fetchMerchantInfo(accessToken: string): Promise<MerchantIn
     };
   } catch (error) {
     throw new Error('fetchMerchantInfo_failed', { cause: error });
+  }
+}
+
+/**
+ * Fetch all catalog items from Square
+ */
+export async function fetchCatalogItems(accessToken: string): Promise<CatalogObject[]> {
+  try {
+    const client = new SquareClient({
+      environment:
+        config.square.environment === 'production'
+          ? SquareEnvironment.Production
+          : SquareEnvironment.Sandbox,
+      token: accessToken,
+    });
+
+    const items: CatalogObject[] = [];
+    let page = await client.catalog.list({
+      types: 'ITEM',
+    });
+
+    // Get items from first page
+    items.push(...page.data);
+
+    // Fetch remaining pages
+    while (page.hasNextPage()) {
+      page = await page.getNextPage();
+      items.push(...page.data);
+    }
+
+    console.log(`Fetched ${items.length} items from Square catalog`);
+
+    return items;
+  } catch (error) {
+    throw new Error('fetchCatalogItems_failed', { cause: error });
   }
 }

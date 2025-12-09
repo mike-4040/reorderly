@@ -6,7 +6,7 @@
 import { onRequest } from 'firebase-functions/https';
 
 import { createAuthUser, generateCustomToken } from '../../auth/firebase/user-manager';
-import { getMerchantByProviderId, updateMerchant } from '../../datastore/postgres';
+import { getMerchantByProviderId, updateMerchant } from '../../datastore/merchants';
 import { upsertMerchant } from '../../merchants/service';
 import { fetchMerchantInfo } from '../../providers/square/client';
 import {

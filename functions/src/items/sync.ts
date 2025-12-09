@@ -1,0 +1,123 @@
+/**
+ * Items sync service
+ * Syncs catalog items from Square to database
+ */
+
+import { CatalogObject } from 'square';
+
+import { markItemsNotSeenAsDeleted, upsertItem } from '../datastore/items.js';
+import { getMerchant } from '../datastore/merchants.js';
+import { ItemInput } from '../items/types.js';
+import { fetchCatalogItems } from '../providers/square/client.js';
+import { captureException } from '../utils/sentry.js';
+
+/**
+ * Sync items for a specific merchant
+ * Fetches all items from Square and upserts them into database
+ * Marks items not seen in this sync as deleted
+ */
+export async function syncMerchantItems(merchantId: string): Promise<void> {
+  try {
+    console.log(`Starting item sync for merchant ${merchantId}`);
+
+    // Get merchant to access token
+    const merchant = await getMerchant(merchantId);
+
+    if (!merchant) {
+      throw new Error('syncMerchantItems_merchantNotFound', {
+        cause: { merchantId },
+      });
+    }
+
+    if (merchant.revoked) {
+      console.log(`Skipping sync for revoked merchant ${merchantId}`);
+      return;
+    }
+
+    // Record sync start time
+    const syncStartTime = new Date().toISOString();
+
+    // Fetch items from Square
+    const catalogItems = await fetchCatalogItems(merchant.accessToken);
+
+    console.log(`Fetched ${catalogItems.length} items from Square for merchant ${merchantId}`);
+
+    // Process each item
+    let processedCount = 0;
+    let errorCount = 0;
+
+    for (const catalogItem of catalogItems) {
+      try {
+        const itemInput = mapSquareItemToInput(merchantId, catalogItem);
+        await upsertItem(itemInput);
+        processedCount++;
+      } catch (error) {
+        errorCount++;
+        console.error(`Failed to process item ${catalogItem.id}`, error);
+        captureException(
+          new Error('syncMerchantItems_itemProcessingFailed', {
+            cause: { error, catalogItemId: catalogItem.id },
+          }),
+        );
+      }
+    }
+
+    // Mark items not seen in this sync as deleted
+    const deletedCount = await markItemsNotSeenAsDeleted(merchantId, syncStartTime);
+
+    console.log(
+      `Item sync completed for merchant ${merchantId}: ${processedCount} processed, ${errorCount} errors, ${deletedCount} marked as deleted`,
+    );
+  } catch (error) {
+    console.error(`Failed to sync items for merchant ${merchantId}`, error);
+    captureException(
+      new Error('syncMerchantItems_failed', {
+        cause: { error, merchantId },
+      }),
+    );
+    throw error;
+  }
+}
+
+/**
+ * Map Square catalog item to ItemInput
+ */
+function mapSquareItemToInput(merchantId: string, catalogItem: CatalogObject): ItemInput {
+  if (catalogItem.type !== 'ITEM' || !catalogItem.itemData) {
+    throw new Error('mapSquareItemToInput_missingItemData', {
+      cause: { catalogItemId: catalogItem.id, type: catalogItem.type },
+    });
+  }
+
+  const itemData = catalogItem.itemData;
+
+  // Find category name if category_id exists
+  // For now, we'll store just the ID. In a full implementation,
+  // we could fetch category details or store them separately
+  const categoryName: string | undefined = undefined;
+
+  // Convert BigInt values to strings in the raw data to make it JSON-serializable
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+  const rawData = JSON.parse(
+    JSON.stringify(catalogItem, (_key, value) =>
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+      typeof value === 'bigint' ? value.toString() : value,
+    ),
+  );
+
+  return {
+    merchantId,
+    provider: 'square',
+    providerItemId: catalogItem.id,
+    name: itemData.name ?? '',
+    description: itemData.description ?? undefined,
+    categoryId: itemData.categoryId ?? undefined,
+    categoryName,
+    isDeleted: Boolean(catalogItem.isDeleted),
+    isAvailable: itemData.isArchived !== true,
+    providerVersion: catalogItem.version ? Number(catalogItem.version) : undefined,
+    providerUpdatedAt: catalogItem.updatedAt,
+    lastSeenAt: new Date().toISOString(),
+    raw: rawData,
+  };
+}

@@ -9,6 +9,7 @@ export { squareCallback } from './oauth/square/callback';
 
 // Scheduled functions
 export { scheduledTokenRefresh } from './merchants/scheduled-refresh';
+export { scheduledItemsSync } from './items/scheduled-sync';
 
 // Dev utilities
 export { onCallTest } from './devUtils/on-call-test';

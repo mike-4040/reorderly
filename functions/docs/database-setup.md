@@ -140,7 +140,7 @@ This generates `src/datastore/types/generated.ts` with types for all tables.
 npm run db-schema
 ```
 
-This creates `migrations/schema.sql` with the complete database schema for reference. Regenerate after migrations to keep it current.
+This creates `schema.sql` with the complete database schema for reference. Regenerate after migrations to keep it current.
 
 **When to regenerate:**
 
@@ -160,19 +160,37 @@ The generated file should **not** be manually edited - regenerate it after schem
 
 **Important:** The `pg` driver returns PostgreSQL `BIGINT`/`BIGSERIAL` columns as strings at runtime to preserve precision, even though the generated types show them as `number`. Always use `string` type for ID parameters in your queries.
 
+### BigInt Serialization
+
+When storing API responses in JSONB columns, BigInt values must be converted to strings because `JSON.stringify()` cannot serialize BigInt natively:
+
+```typescript
+const rawData = JSON.parse(
+  JSON.stringify(apiResponse, (_key, value) =>
+    typeof value === 'bigint' ? value.toString() : value,
+  ),
+);
+```
+
+This pattern is used when storing Square API responses in the `raw` JSONB column.
+
 ### Centralized Datastore
 
-All database queries are centralized in `src/datastore/postgres.ts` for consistency and maintainability.
+All database queries are centralized in `src/datastore/` for consistency and maintainability:
+
+- `merchants.ts` - Merchant CRUD operations
+- `items.ts` - Item CRUD operations
+- `mappers.ts` - Database row to domain model converters
 
 Example:
 
 ```typescript
-import { getMerchantById } from './datastore/postgres.js';
+import { getMerchant } from './datastore/merchants.js';
 
-const merchant = await getMerchantById('123');
+const merchant = await getMerchant('123');
 ```
 
-When adding new queries, add them to the datastore file with:
+When adding new queries, add them to the appropriate datastore file with:
 
 - Generated types for row results
 - Parameterized queries to prevent SQL injection
