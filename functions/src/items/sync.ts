@@ -9,6 +9,7 @@ import { markItemsNotSeenAsDeleted, upsertItem } from '../datastore/items.js';
 import { getMerchant } from '../datastore/merchants.js';
 import { ItemInput } from '../items/types.js';
 import { fetchCatalogItems } from '../providers/square/client.js';
+import { serializeBigIntValues } from '../utils/object.js';
 import { captureException } from '../utils/sentry.js';
 
 /**
@@ -89,21 +90,12 @@ function mapSquareItemToInput(merchantId: string, catalogItem: CatalogObject): I
     });
   }
 
-  const itemData = catalogItem.itemData;
+  const { itemData } = catalogItem;
 
   // Find category name if category_id exists
   // For now, we'll store just the ID. In a full implementation,
   // we could fetch category details or store them separately
   const categoryName: string | undefined = undefined;
-
-  // Convert BigInt values to strings in the raw data to make it JSON-serializable
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const rawData = JSON.parse(
-    JSON.stringify(catalogItem, (_key, value) =>
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-      typeof value === 'bigint' ? value.toString() : value,
-    ),
-  );
 
   return {
     merchantId,
@@ -118,6 +110,6 @@ function mapSquareItemToInput(merchantId: string, catalogItem: CatalogObject): I
     providerVersion: catalogItem.version ? Number(catalogItem.version) : undefined,
     providerUpdatedAt: catalogItem.updatedAt,
     lastSeenAt: new Date().toISOString(),
-    raw: rawData,
+    raw: serializeBigIntValues(catalogItem),
   };
 }

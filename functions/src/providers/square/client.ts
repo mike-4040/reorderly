@@ -2,7 +2,7 @@
  * Square API client for merchant operations
  */
 
-import { CatalogObject, SquareClient, SquareEnvironment } from 'square';
+import { CatalogObject, SquareClient } from 'square';
 
 import { Location, MerchantInfo } from '../../merchants/types';
 import { config } from '../../utils/config';
@@ -13,10 +13,7 @@ import { config } from '../../utils/config';
 export async function fetchMerchantInfo(accessToken: string): Promise<MerchantInfo> {
   try {
     const client = new SquareClient({
-      environment:
-        config.square.environment === 'production'
-          ? SquareEnvironment.Production
-          : SquareEnvironment.Sandbox,
+      environment: config.square.environment,
       token: accessToken,
     });
 
@@ -70,10 +67,7 @@ export async function fetchMerchantInfo(accessToken: string): Promise<MerchantIn
 export async function fetchCatalogItems(accessToken: string): Promise<CatalogObject[]> {
   try {
     const client = new SquareClient({
-      environment:
-        config.square.environment === 'production'
-          ? SquareEnvironment.Production
-          : SquareEnvironment.Sandbox,
+      environment: config.square.environment,
       token: accessToken,
     });
 

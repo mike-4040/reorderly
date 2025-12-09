@@ -5,6 +5,8 @@
 
 import { env } from 'node:process';
 
+import { SquareEnvironment } from 'square';
+
 /**
  * Get required environment variable
  */
@@ -25,7 +27,10 @@ export const config = {
     return {
       clientId: getRequiredEnv('SQUARE_CLIENT_ID'),
       clientSecret: getRequiredEnv('SQUARE_CLIENT_SECRET'),
-      environment: env.SQUARE_ENVIRONMENT === 'production' ? 'production' : 'sandbox',
+      environment:
+        env.SQUARE_ENVIRONMENT === 'production'
+          ? SquareEnvironment.Production
+          : SquareEnvironment.Sandbox,
     };
   },
 
