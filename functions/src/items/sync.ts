@@ -13,6 +13,11 @@ import { serializeBigIntValues } from '../utils/object.js';
 import { captureException } from '../utils/sentry.js';
 
 /**
+ * Batch size for parallel item processing
+ */
+const BATCH_SIZE = 20;
+
+/**
  * Sync items for a specific merchant
  * Fetches all items from Square and upserts them into database
  * Marks items not seen in this sync as deleted
@@ -43,24 +48,34 @@ export async function syncMerchantItems(merchantId: string): Promise<void> {
 
     console.log(`Fetched ${catalogItems.length} items from Square for merchant ${merchantId}`);
 
-    // Process each item
+    // Process items in parallel batches
     let processedCount = 0;
     let errorCount = 0;
 
-    for (const catalogItem of catalogItems) {
-      try {
-        const itemInput = mapSquareItemToInput(merchantId, catalogItem);
-        await upsertItem(itemInput);
-        processedCount++;
-      } catch (error) {
-        errorCount++;
-        console.error(`Failed to process item ${catalogItem.id}`, error);
-        captureException(
-          new Error('syncMerchantItems_itemProcessingFailed', {
-            cause: { error, catalogItemId: catalogItem.id },
-          }),
-        );
-      }
+    for (let i = 0; i < catalogItems.length; i += BATCH_SIZE) {
+      const batch = catalogItems.slice(i, i + BATCH_SIZE);
+      const results = await Promise.allSettled(
+        batch.map(async (catalogItem) => {
+          const itemInput = mapSquareItemToInput(merchantId, catalogItem);
+          await upsertItem(itemInput);
+          return catalogItem.id;
+        }),
+      );
+
+      results.forEach((result, idx) => {
+        const catalogItem = batch[idx];
+        if (result.status === 'fulfilled') {
+          processedCount++;
+        } else {
+          errorCount++;
+          captureException(
+            new Error('syncMerchantItems_itemProcessingFailed', {
+              // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+              cause: { error: result.reason, catalogItemId: catalogItem.id },
+            }),
+          );
+        }
+      });
     }
 
     // Mark items not seen in this sync as deleted
@@ -70,7 +85,6 @@ export async function syncMerchantItems(merchantId: string): Promise<void> {
       `Item sync completed for merchant ${merchantId}: ${processedCount} processed, ${errorCount} errors, ${deletedCount} marked as deleted`,
     );
   } catch (error) {
-    console.error(`Failed to sync items for merchant ${merchantId}`, error);
     captureException(
       new Error('syncMerchantItems_failed', {
         cause: { error, merchantId },
