@@ -25,11 +25,6 @@ const getIdToken = async (uid_or_email: string) => {
   if (uid_or_email.includes('@')) {
     const authRecord = await auth.getUserByEmail(uid_or_email);
 
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    if (!authRecord) {
-      console.error(`No user found for email: ${uid_or_email}`);
-      return;
-    }
     uid = authRecord.uid;
   }
 
