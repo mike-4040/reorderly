@@ -27,10 +27,7 @@ let cachedSquareClient: SquareClient | null = null;
  */
 function getSquareClient(): SquareClient {
   cachedSquareClient ??= new SquareClient({
-    environment:
-      config.square.environment === 'production'
-        ? SquareEnvironment.Production
-        : SquareEnvironment.Sandbox,
+    environment: config.square.environment,
   });
   return cachedSquareClient;
 }
@@ -47,7 +44,7 @@ export function generateAuthorizationUrl(stateId: string): string {
   });
 
   const baseUrl =
-    config.square.environment === 'production'
+    config.square.environment === SquareEnvironment.Production
       ? 'https://connect.squareup.com'
       : 'https://connect.squareupsandbox.com';
 

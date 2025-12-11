@@ -11,5 +11,8 @@ export { squareCallback } from './oauth/square/callback';
 export { scheduledTokenRefresh } from './merchants/scheduled-refresh';
 export { scheduledItemsSync } from './items/scheduled-sync';
 
+// User endpoints
+export { getUser } from './users/endpoints/get-user';
+
 // Dev utilities
 export { onCallTest } from './devUtils/on-call-test';

@@ -21,6 +21,17 @@ For local development or emulator use, we download them into a `.env` file.
 - `SENTRY_DSN` - Sentry DSN for error tracking (omit to disable Sentry)
 - `SENTRY_ENVIRONMENT` - Sentry environment name (defaults to `development`)
 
+### Local Development Only
+
+These variables are only needed for local testing of onCall functions with Postman/curl:
+
+- `WEB_API_KEY` - Firebase Web API Key (used by `npm run get-id-token` to generate authentication tokens for testing)
+- `GOOGLE_APPLICATION_CREDENTIALS` - Path to Firebase service account JSON file (used by Firebase Admin SDK)
+
+**Important:** `GOOGLE_APPLICATION_CREDENTIALS` **only** be added to the `dev` config in Doppler. Do **not** add them to `stg` or `prd` configs as they will break Cloud Functions deployment.
+
+**Note:** Do not use environment variable names starting with `FIREBASE_` as they are reserved by Firebase.
+
 ## Usage
 
 ```typescript
