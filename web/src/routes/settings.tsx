@@ -1,4 +1,4 @@
-import { Title, Text, Container, Button, Stack } from '@mantine/core';
+import { Title, Text, Container, Button, Stack, Skeleton } from '@mantine/core';
 import { createFileRoute, useNavigate } from '@tanstack/react-router';
 import { useEffect } from 'react';
 
@@ -6,7 +6,9 @@ import { AccountSection } from '../components/AccountSection';
 import { EmailSection } from '../components/EmailSection';
 import { PasswordSection } from '../components/PasswordSection';
 import { SetPasswordForm } from '../components/SetPasswordForm';
+import { UserInfoSection } from '../components/UserInfoSection';
 import { useAuth } from '../contexts/useAuth';
+import { useUserData } from '../hooks/useUserData';
 import { getFunctionsUrl } from '../utils/env';
 import { requireAuth } from '../utils/route-guards';
 
@@ -27,6 +29,11 @@ export const Route = createFileRoute('/settings')({
 function Settings() {
   const { token } = Route.useSearch();
   const { user, signInWithCustomToken } = useAuth();
+  const {
+    data: userData,
+    isLoading: isLoadingUserData,
+    error: errorUserData,
+  } = useUserData();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -69,6 +76,14 @@ function Settings() {
 
       {user && (
         <Stack mt="xl" gap="xl">
+          {isLoadingUserData && <Skeleton height={150} />}
+          {errorUserData && (
+            <Text c="red" size="sm">
+              Failed to load user information
+            </Text>
+          )}
+          {userData && <UserInfoSection userData={userData} />}
+
           <EmailSection user={user} />
 
           {hasPassword ? (

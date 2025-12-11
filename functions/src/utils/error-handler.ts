@@ -30,7 +30,6 @@ export class ExternalSilentError extends Error {}
 export function handleError(error: unknown): ErrorResponse {
   // External error - log and return message
   if (error instanceof ExternalError) {
-    console.error(error);
     captureException(error);
     return {
       success: false,
