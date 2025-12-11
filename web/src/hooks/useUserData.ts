@@ -19,26 +19,26 @@ export interface UserData {
 /**
  * Response from getUser Cloud Function
  */
-interface GetUserResponse {
+interface GetUserDataResponse {
   success: true;
   data: {
     user: UserData;
   };
 }
 
-interface GetUserErrorResponse {
+interface GetUserDataErrorResponse {
   success: false;
   message: string;
 }
 
-interface GetUserResult {
-  result: GetUserResponse | GetUserErrorResponse;
+interface GetUserDataResult {
+  result: GetUserDataResponse | GetUserDataErrorResponse;
 }
 
 /**
  * Fetch user data from Cloud Function
  */
-async function fetchUser(idToken: string): Promise<UserData> {
+async function fetchUserData(idToken: string): Promise<UserData> {
   const functionsUrl = getFunctionsUrl();
   const response = await fetch(`${functionsUrl}/getUser`, {
     method: 'POST',
@@ -50,10 +50,12 @@ async function fetchUser(idToken: string): Promise<UserData> {
   });
 
   if (!response.ok) {
-    throw new Error(`fetchUser_failed: ${response.statusText}`);
+    throw new Error(`fetchUserData_failed`, {
+      cause: { statusText: response.statusText },
+    });
   }
 
-  const { result } = (await response.json()) as GetUserResult;
+  const { result } = (await response.json()) as GetUserDataResult;
 
   if (!result.success) {
     throw new Error('fetchUser_notSuccessful', {
@@ -76,11 +78,11 @@ export function useUserData() {
     queryKey: ['user', authUser?.uid],
     queryFn: async () => {
       if (!authUser) {
-        throw new Error('useUser_notAuthenticated');
+        throw new Error('useUserData_notAuthenticated');
       }
 
       const idToken = await authUser.getIdToken();
-      return fetchUser(idToken);
+      return fetchUserData(idToken);
     },
     enabled: !!authUser,
     staleTime: 5 * 60 * 1000, // Consider data fresh for 5 minutes
