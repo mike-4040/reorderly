@@ -9,6 +9,7 @@
     "build": "tsc",
     "build:watch": "tsc --watch",
     "start": "./scripts/start-emulators.sh",
+    "get-id-token": "doppler run -p backend -c dev -- node --experimental-strip-types ./src/devUtils/get-id-token.ts",
     "deploy-stg": "firebase deploy --project reorderly-staging --only functions",
     "logs": "firebase functions:log",
     "tunnel": "ngrok http --url=reorderly.ngrok.app 3302",
