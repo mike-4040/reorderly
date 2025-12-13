@@ -5,10 +5,10 @@
 
 import { onCall } from 'firebase-functions/https';
 
+import { updateUser } from '../../datastore/users.js';
 import { auth as firebaseAuth } from '../../inits/firebase';
 import { CFResponse, ExternalError, handleError } from '../../utils/error-handler';
 import { digProperty } from '../../utils/object';
-import { updateUser } from '../repository';
 
 interface Payload {
   email: string;

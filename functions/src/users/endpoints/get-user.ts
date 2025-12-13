@@ -5,8 +5,8 @@
 
 import { onCall } from 'firebase-functions/https';
 
+import { getUserById } from '../../datastore/users';
 import { CFResponse, ExternalError, handleError } from '../../utils/error-handler';
-import { getUserById } from '../repository';
 import { User } from '../types';
 
 type Payload = Record<string, never>;

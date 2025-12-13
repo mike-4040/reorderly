@@ -14,7 +14,7 @@ User → /squareAuthorize → Square Login → /squareCallback → Firestore
 
 1. **State Management** (`oauth/shared/state.ts`) - CSRF protection using cryptographically secure tokens
 2. **Square Client** (`oauth/square/client.ts`) - Square SDK integration for OAuth and API calls
-3. **Merchant Repository** (`merchants/repository.ts`) - Firestore CRUD operations
+3. **Datastore** (`datastore/merchants.ts`, `datastore/users.ts`) - PostgreSQL database queries
 4. **HTTP Endpoints** (`oauth/square/endpoints.ts`) - Authorization and callback handlers
 
 ### Endpoints

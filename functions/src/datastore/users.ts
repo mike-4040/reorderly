@@ -14,7 +14,7 @@ type UserRow = Database['public']['Tables']['users']['Row'];
 /**
  * Get user by Firebase Auth UID
  */
-export async function getUser(id: string): Promise<User | null> {
+export async function getUserById(id: string): Promise<User | null> {
   const { rows } = await getPgPool().query<UserRow>('SELECT * FROM users WHERE id = $1', [id]);
 
   return rowToUser(rows[0]);
