@@ -6,10 +6,7 @@
 import { getPgPool } from '../clients/postgres.js';
 import { CreateUserData, UpdateUserData, User } from '../users/types.js';
 
-import { rowToUser } from './mappers.js';
-import { Database } from './types/generated.js';
-
-type UserRow = Database['public']['Tables']['users']['Row'];
+import { rowToUser, UserRow } from './mappers.js';
 
 /**
  * Get user by Firebase Auth UID

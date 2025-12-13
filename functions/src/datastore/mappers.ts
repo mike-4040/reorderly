@@ -8,9 +8,11 @@ import { User, UserRole } from '../users/types.js';
 
 import { Database } from './types/generated.js';
 
-type MerchantRow = Database['public']['Tables']['merchants']['Row'];
-type ItemRow = Database['public']['Tables']['items']['Row'];
-type UserRow = Database['public']['Tables']['users']['Row'];
+type Tables = Database['public']['Tables'];
+
+export type MerchantRow = Tables['merchants']['Row'];
+export type ItemRow = Tables['items']['Row'];
+export type UserRow = Tables['users']['Row'];
 
 /**
  * Convert database row to domain Merchant type
