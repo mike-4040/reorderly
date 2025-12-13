@@ -34,6 +34,7 @@ export const squareAuthorize = onRequest(async (req, res) => {
 
     // Prevent caching of the redirect response
     res.set('Cache-Control', 'no-store');
+    console.log('Redirecting to Square OAuth URL:', authUrl);
 
     res.redirect(authUrl);
   } catch (error) {

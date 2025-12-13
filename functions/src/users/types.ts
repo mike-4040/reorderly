@@ -2,19 +2,17 @@
  * User types and interfaces
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
-
 /**
  * User roles for role-based access control
  */
 export type UserRole = 'owner' | 'admin' | 'manager' | 'staff';
 
 /**
- * User document in Firestore
+ * User in PostgreSQL
  * Represents a Firebase Auth user and their relationship to merchants
  */
 export interface User {
-  /** Firestore document ID (same as Firebase Auth UID) */
+  /** Firebase Auth UID */
   id: string;
   /** Reference to the merchant this user belongs to */
   merchantId: string;
@@ -24,16 +22,16 @@ export interface User {
   providerUserId?: string;
   /** User role for permissions */
   role: UserRole;
-  /** When the email was verified */
-  emailVerifiedAt?: Timestamp;
-  /** When the last verification email was sent */
-  emailVerificationSentAt?: Timestamp;
-  /** When the user set their password */
-  passwordSetAt?: Timestamp;
-  /** When the user was created */
-  createdAt: Timestamp;
-  /** When the user was last updated */
-  updatedAt: Timestamp;
+  /** When the email was verified (ISO date string) */
+  emailVerifiedAt?: string;
+  /** When the last verification email was sent (ISO date string) */
+  emailVerificationSentAt?: string;
+  /** When the user set their password (ISO date string) */
+  passwordSetAt?: string;
+  /** When the user was created (ISO date string) */
+  createdAt: string;
+  /** When the user was last updated (ISO date string) */
+  updatedAt: string;
 }
 
 /**
@@ -64,10 +62,10 @@ export interface UpdateUserData {
   providerUserId?: string;
   /** User role */
   role?: UserRole;
-  /** When the email was verified */
-  emailVerifiedAt?: Timestamp;
-  /** When the last verification email was sent */
-  emailVerificationSentAt?: Timestamp;
-  /** When the user set their password */
-  passwordSetAt?: Timestamp;
+  /** When the email was verified (ISO date string) */
+  emailVerifiedAt?: string;
+  /** When the last verification email was sent (ISO date string) */
+  emailVerificationSentAt?: string;
+  /** When the user set their password (ISO date string) */
+  passwordSetAt?: string;
 }

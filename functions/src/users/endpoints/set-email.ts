@@ -3,7 +3,6 @@
  * Allows user to set their email address and sends verification email
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
 import { onCall } from 'firebase-functions/https';
 
 import { auth as firebaseAuth } from '../../inits/firebase';
@@ -54,9 +53,9 @@ export const setEmail = onCall<Payload, CFResponse<Result>>(async ({ data, auth 
     // For now, just log the link
     console.log('Email verification link:', actionLink);
 
-    // Update Firestore user with timestamp
+    // Update user with timestamp
     await updateUser(userId, {
-      emailVerificationSentAt: Timestamp.now(),
+      emailVerificationSentAt: new Date().toISOString(),
     });
 
     return {

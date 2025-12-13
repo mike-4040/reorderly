@@ -1,35 +1,26 @@
 /**
- * User repository for Firestore operations
+ * User repository for PostgreSQL operations
  */
 
-import { Timestamp } from 'firebase-admin/firestore';
-
-import { collections } from '../utils/firestore';
+import {
+  createUser as dbCreateUser,
+  deleteUser as dbDeleteUser,
+  getUser,
+  getUserByMerchantAndProvider as dbGetUserByMerchantAndProvider,
+  getUsersByMerchantId as dbGetUsersByMerchantId,
+  updateUser as dbUpdateUser,
+} from '../datastore/users.js';
 
 import { CreateUserData, UpdateUserData, User } from './types';
 
 /**
- * Create a new user in Firestore
+ * Create a new user in PostgreSQL
  *
  * @param data - User creation data
  * @returns The created user
  */
 export async function createUser(data: CreateUserData): Promise<User> {
-  const now = Timestamp.now();
-
-  const user: User = {
-    id: data.id,
-    merchantId: data.merchantId,
-    accountSetupComplete: data.accountSetupComplete,
-    providerUserId: data.providerUserId,
-    role: data.role,
-    createdAt: now,
-    updatedAt: now,
-  };
-
-  await collections.users.doc(data.id).set(user);
-
-  return user;
+  return dbCreateUser(data);
 }
 
 /**
@@ -39,13 +30,7 @@ export async function createUser(data: CreateUserData): Promise<User> {
  * @returns The user or null if not found
  */
 export async function getUserById(uid: string): Promise<User | null> {
-  const doc = await collections.users.doc(uid).get();
-
-  if (!doc.exists) {
-    return null;
-  }
-
-  return doc.data() as User;
+  return getUser(uid);
 }
 
 /**
@@ -56,12 +41,7 @@ export async function getUserById(uid: string): Promise<User | null> {
  * @returns The updated user
  */
 export async function updateUser(uid: string, data: UpdateUserData): Promise<User> {
-  const updateData = {
-    ...data,
-    updatedAt: Timestamp.now(),
-  };
-
-  await collections.users.doc(uid).update(updateData);
+  await dbUpdateUser(uid, data);
 
   const updated = await getUserById(uid);
 
@@ -79,9 +59,7 @@ export async function updateUser(uid: string, data: UpdateUserData): Promise<Use
  * @returns Array of users
  */
 export async function getUsersByMerchantId(merchantId: string): Promise<User[]> {
-  const snapshot = await collections.users.where('merchantId', '==', merchantId).get();
-
-  return snapshot.docs.map((doc) => doc.data() as User);
+  return dbGetUsersByMerchantId(merchantId);
 }
 
 /**
@@ -96,17 +74,7 @@ export async function getUserByMerchantAndProvider(
   merchantId: string,
   providerUserId: string,
 ): Promise<User | null> {
-  const snapshot = await collections.users
-    .where('merchantId', '==', merchantId)
-    .where('providerUserId', '==', providerUserId)
-    .limit(1)
-    .get();
-
-  if (snapshot.empty) {
-    return null;
-  }
-
-  return snapshot.docs[0].data() as User;
+  return dbGetUserByMerchantAndProvider(merchantId, providerUserId);
 }
 
 /**
@@ -132,5 +100,5 @@ export async function getOrCreateUser(data: CreateUserData): Promise<User> {
  * @param uid - Firebase Auth UID
  */
 export async function deleteUser(uid: string): Promise<void> {
-  await collections.users.doc(uid).delete();
+  await dbDeleteUser(uid);
 }

@@ -152,6 +152,53 @@ export type Database = {
         }
         Relationships: []
       }
+      users: {
+        Row: {
+          account_setup_complete: boolean
+          created_at: string
+          email_verification_sent_at: string | null
+          email_verified_at: string | null
+          id: string
+          merchant_id: number
+          password_set_at: string | null
+          provider_user_id: string | null
+          role: string
+          updated_at: string
+        }
+        Insert: {
+          account_setup_complete?: boolean
+          created_at?: string
+          email_verification_sent_at?: string | null
+          email_verified_at?: string | null
+          id: string
+          merchant_id: number
+          password_set_at?: string | null
+          provider_user_id?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Update: {
+          account_setup_complete?: boolean
+          created_at?: string
+          email_verification_sent_at?: string | null
+          email_verified_at?: string | null
+          id?: string
+          merchant_id?: number
+          password_set_at?: string | null
+          provider_user_id?: string | null
+          role?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "users_merchant_id_fkey"
+            columns: ["merchant_id"]
+            isOneToOne: false
+            referencedRelation: "merchants"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Views: {
       [_ in never]: never
