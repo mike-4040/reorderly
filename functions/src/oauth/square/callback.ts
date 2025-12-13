@@ -7,7 +7,7 @@ import { onRequest } from 'firebase-functions/https';
 
 import { createAuthUser, generateCustomToken } from '../../auth/firebase/user-manager';
 import { getMerchantByProviderId, updateMerchant } from '../../datastore/merchants';
-import { createUser, getUserById, getUserByMerchantAndProvider } from '../../datastore/users.js';
+import { createUser, getUserByMerchantAndProvider } from '../../datastore/users.js';
 import { upsertMerchant } from '../../merchants/service';
 import { fetchMerchantInfo } from '../../providers/square/client';
 import { config } from '../../utils/config';
@@ -88,6 +88,8 @@ export const squareCallback = onRequest(async (req, res) => {
       return;
     }
 
+    // Signup / connect flow
+
     // Fetch merchant information
     const merchantInfo = await fetchMerchantInfo(tokens.accessToken);
 
@@ -113,21 +115,13 @@ export const squareCallback = onRequest(async (req, res) => {
       // Note: Each person gets their own UID, even if accessing same merchant
       const authUser = await createAuthUser(merchant.name);
 
-      // Check if user already exists
-      const existingUser = await getUserById(authUser.uid);
-
-      if (!existingUser) {
-        // Create App User in PostgreSQL
-        appUser = await createUser({
-          id: authUser.uid,
-          merchantId: merchant.id,
-          accountSetupComplete: false,
-          providerUserId: tokens.merchantId,
-          role: 'owner', // First OAuth user is the business owner
-        });
-      } else {
-        appUser = existingUser;
-      }
+      appUser = await createUser({
+        id: authUser.uid,
+        merchantId: merchant.id,
+        accountSetupComplete: false,
+        providerUserId: tokens.merchantId,
+        role: 'owner', // First OAuth user is the business owner
+      });
     }
 
     // Generate custom token for web client to sign in
