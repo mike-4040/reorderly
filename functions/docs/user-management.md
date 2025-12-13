@@ -10,27 +10,30 @@ The Reorderly application maintains two separate user systems that work together
 
 **Location:** `functions/src/users/types.ts`
 
-**Purpose:** Application-level user data stored in Firestore
+**Purpose:** Application-level user data stored in PostgreSQL
 
-**Collection:** `users/{firebaseUid}`
+**Table:** `users`
 
 **Schema:**
 
 ```typescript
 {
   id: string;                    // Firebase Auth UID (unique per person)
-  merchantId: string;             // Reference to merchant document
+  merchantId: string;             // Reference to merchant ID
   accountSetupComplete: boolean;  // Has user set up email/password?
   providerUserId?: string;        // Optional: Square merchant ID
-  role?: string;                  // Optional: User role (owner, admin, manager, staff)
-  createdAt: Timestamp;
-  updatedAt: Timestamp;
+  role: string;                   // User role (owner, admin, manager, staff)
+  emailVerifiedAt?: string;       // ISO date string
+  emailVerificationSentAt?: string; // ISO date string
+  passwordSetAt?: string;         // ISO date string
+  createdAt: string;              // ISO date string
+  updatedAt: string;              // ISO date string
 }
 ```
 
 **Key Characteristics:**
 
-- Stored in Firestore `users` collection
+- Stored in PostgreSQL `users` table
 - Links Firebase Auth users to merchants
 - Tracks account setup status
 - Supports multiple users per merchant (team members, roles)
@@ -161,15 +164,16 @@ This allows:
 - Managing sign-in/sign-out
 - Creating new auth users
 
-## Repository Functions
+## Datastore Functions
 
-### App Users (`functions/src/users/repository.ts`)
+### App Users (`functions/src/datastore/users.ts`)
 
-- `createUser(data)` - Create user in Firestore
-- `getUserById(uid)` - Get Firestore user
-- `updateUser(uid, data)` - Update Firestore user
+- `createUser(data)` - Create user in PostgreSQL
+- `getUserById(id)` - Get user by Firebase Auth UID
+- `updateUser(id, updates)` - Update user fields
 - `getUsersByMerchantId(merchantId)` - List users for merchant
-- `getOrCreateUser(data)` - Get or create App user
+- `getUserByMerchantAndProvider(merchantId, providerUserId)` - Find user by provider
+- `deleteUser(id)` - Delete user
 
 ### Auth Users (`functions/src/auth/firebase/user-manager.ts`)
 
@@ -194,12 +198,12 @@ This enables:
 
 ### Corrupted App User State
 
-**Edge Case:** If an Auth User exists in Firebase Authentication but the corresponding App User is missing from Firestore, the login flow will fail with an error.
+**Edge Case:** If an Auth User exists in Firebase Authentication but the corresponding App User is missing from PostgreSQL, the login flow will fail with an error.
 
 **Symptoms:**
 
 - User exists in Firebase Console > Authentication
-- No matching document in Firestore `users` collection
+- No matching record in PostgreSQL `users` table
 - OAuth login flow throws `loginFlow_appUserNotFound` error
 
 **Current Behavior:**
@@ -211,17 +215,10 @@ This enables:
 **Manual Recovery:**
 
 1. Verify Auth User exists in Firebase Console
-2. Create App User document manually in Firestore:
-   ```typescript
-   {
-     id: '<auth-uid>',
-     merchantId: '<merchant-id>',
-     providerUserId: '<square-merchant-id>',
-     accountSetupComplete: false,
-     role: 'owner',
-     createdAt: <timestamp>,
-     updatedAt: <timestamp>
-   }
+2. Create App User record manually in PostgreSQL:
+   ```sql
+   INSERT INTO users (id, merchant_id, provider_user_id, account_setup_complete, role)
+   VALUES ('<auth-uid>', <merchant-id>, '<square-merchant-id>', false, 'owner');
    ```
 3. User can retry login
 

@@ -6,10 +6,7 @@
 import { getPgPool } from '../clients/postgres.js';
 import { Item, ItemInput, ItemUpdate } from '../items/types.js';
 
-import { rowToItem } from './mappers.js';
-import { Database } from './types/generated.js';
-
-type ItemRow = Database['public']['Tables']['items']['Row'];
+import { ItemRow, rowToItem } from './mappers.js';
 
 /**
  * Get item by ID

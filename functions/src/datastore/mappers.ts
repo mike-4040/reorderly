@@ -4,11 +4,15 @@
 
 import { Item } from '../items/types.js';
 import { Location, Merchant, Provider } from '../merchants/types.js';
+import { User, UserRole } from '../users/types.js';
 
 import { Database } from './types/generated.js';
 
-type MerchantRow = Database['public']['Tables']['merchants']['Row'];
-type ItemRow = Database['public']['Tables']['items']['Row'];
+type Tables = Database['public']['Tables'];
+
+export type MerchantRow = Tables['merchants']['Row'];
+export type ItemRow = Tables['items']['Row'];
+export type UserRow = Tables['users']['Row'];
 
 /**
  * Convert database row to domain Merchant type
@@ -62,6 +66,28 @@ export function rowToItem(row: ItemRow | null | undefined): Item | null {
     providerUpdatedAt: row.provider_updated_at ?? undefined,
     lastSeenAt: row.last_seen_at ?? undefined,
     raw: row.raw ?? undefined,
+    createdAt: row.created_at,
+    updatedAt: row.updated_at,
+  };
+}
+
+/**
+ * Convert database row to domain User type
+ */
+export function rowToUser(row: UserRow | null | undefined): User | null {
+  if (!row) {
+    return null;
+  }
+
+  return {
+    id: row.id,
+    merchantId: row.merchant_id.toString(),
+    accountSetupComplete: row.account_setup_complete,
+    providerUserId: row.provider_user_id ?? undefined,
+    role: row.role as UserRole,
+    emailVerifiedAt: row.email_verified_at ?? undefined,
+    emailVerificationSentAt: row.email_verification_sent_at ?? undefined,
+    passwordSetAt: row.password_set_at ?? undefined,
     createdAt: row.created_at,
     updatedAt: row.updated_at,
   };

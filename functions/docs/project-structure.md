@@ -6,10 +6,11 @@ functions/src/
 ├── utils/                # Shared utilities
 │   ├── config.ts         # Environment configuration (lazy-loaded)
 │   ├── error-handler.ts  # Error handling and custom error classes
-│   └── firestore.ts      # Firestore initialization and collection refs
-├── datastore/            # Database layer
+│   └── firestore.ts      # Firestore initialization (OAuth states only)
+├── datastore/            # Database layer (PostgreSQL)
 │   ├── merchants.ts      # Merchant database queries
 │   ├── items.ts          # Item database queries
+│   ├── users.ts          # User database queries
 │   ├── mappers.ts        # Row-to-domain model converters
 │   └── types/            # Generated database types
 ├── oauth/                # OAuth providers

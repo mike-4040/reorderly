@@ -6,10 +6,7 @@
 import { getPgPool } from '../clients/postgres.js';
 import { Merchant, MerchantInput } from '../merchants/types.js';
 
-import { rowToMerchant } from './mappers.js';
-import { Database } from './types/generated.js';
-
-type MerchantRow = Database['public']['Tables']['merchants']['Row'];
+import { rowToMerchant, MerchantRow } from './mappers.js';
 
 /**
  * Get merchant by ID
